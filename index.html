@@ -18,6 +18,7 @@
     --bronze: #ff8a65;
     --red: #ef5350;
     --orange: #ff9800;
+    --blue: #42a5f5;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +41,6 @@
     position: relative;
     overflow: hidden;
   }
-
   header::before {
     content: '⚽';
     position: absolute;
@@ -51,7 +51,6 @@
     transform: translateX(-50%);
     pointer-events: none;
   }
-
   header h1 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(44px, 10vw, 88px);
@@ -60,7 +59,6 @@
     line-height: 1;
     text-shadow: 0 0 40px rgba(0,230,118,0.3);
   }
-
   header p {
     color: var(--muted);
     font-size: 14px;
@@ -69,7 +67,6 @@
     text-transform: uppercase;
   }
 
-  /* Sync indicator */
   .sync-bar {
     display: flex;
     align-items: center;
@@ -82,11 +79,7 @@
     color: var(--muted);
     border-bottom: 1px solid var(--border);
   }
-  .sync-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--muted);
-    transition: background 0.3s;
-  }
+  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
   .sync-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); }
   .sync-dot.error { background: var(--red); }
 
@@ -98,7 +91,6 @@
     max-width: 500px;
     margin: 0 auto;
   }
-
   .tab {
     flex: 1;
     padding: 12px;
@@ -114,33 +106,15 @@
     border-radius: 6px;
     transition: all 0.2s;
   }
-
-  .tab.active {
-    background: var(--green);
-    border-color: var(--green);
-    color: var(--dark);
-    font-weight: 600;
-  }
-
-  .tab:hover:not(.active) {
-    border-color: var(--green);
-    color: var(--green);
-  }
+  .tab.active { background: var(--green); border-color: var(--green); color: var(--dark); font-weight: 600; }
+  .tab:hover:not(.active) { border-color: var(--green); color: var(--green); }
 
   .page { display: none; padding: 32px 24px 80px; max-width: 500px; margin: 0 auto; }
   .page.active { display: block; }
 
-  .locked-msg {
-    text-align: center;
-    padding: 60px 0;
-  }
+  .locked-msg { text-align: center; padding: 60px 0; }
   .locked-msg .icon { font-size: 56px; display: block; margin-bottom: 16px; }
-  .locked-msg h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 3px;
-    color: var(--muted);
-  }
+  .locked-msg h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--muted); }
   .locked-msg p { color: var(--muted); font-size: 14px; margin-top: 8px; }
 
   .field-label {
@@ -151,7 +125,6 @@
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-
   .field-input {
     width: 100%;
     background: var(--card);
@@ -165,37 +138,19 @@
     margin-bottom: 28px;
     transition: border-color 0.2s;
   }
-
   .field-input:focus { border-color: var(--green); }
 
+  /* Vote page */
   .pick-section { margin-bottom: 20px; }
-
-  .pick-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .badge {
-    width: 32px; height: 32px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 16px; flex-shrink: 0;
-  }
-
+  .pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .badge { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 16px; flex-shrink: 0; }
   .badge.gold { background: var(--gold); color: #111; }
   .badge.silver { background: var(--silver); color: #111; }
   .badge.bronze { background: var(--bronze); color: #111; }
-
   .pick-label { font-size: 13px; color: var(--muted); }
   .pick-label span { color: var(--text); font-weight: 600; }
 
-  .player-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
+  .player-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .player-btn {
     padding: 10px 6px;
     background: var(--card);
@@ -210,7 +165,6 @@
     text-align: center;
     line-height: 1.3;
   }
-
   .player-btn:hover { border-color: var(--green); color: var(--text); }
   .player-btn.selected-1 { background: rgba(255,214,0,0.15); border-color: var(--gold); color: var(--gold); font-weight: 600; }
   .player-btn.selected-2 { background: rgba(176,190,197,0.15); border-color: var(--silver); color: var(--silver); font-weight: 600; }
@@ -232,39 +186,15 @@
     transition: all 0.2s;
     box-shadow: 0 4px 20px rgba(0,230,118,0.2);
   }
-
   .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(0,230,118,0.35); }
   .submit-btn:active { transform: translateY(0); }
   .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-  .success-msg {
-    text-align: center;
-    padding: 32px 0;
-    display: none;
-  }
-
-  .success-msg .checkmark {
-    font-size: 56px;
-    display: block;
-    margin-bottom: 16px;
-    animation: pop 0.4s ease;
-  }
-
-  @keyframes pop {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-
-  .success-msg h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 3px;
-    color: var(--green);
-  }
-
+  .success-msg { text-align: center; padding: 32px 0; display: none; }
+  .success-msg .checkmark { font-size: 56px; display: block; margin-bottom: 16px; animation: pop 0.4s ease; }
+  @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+  .success-msg h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 3px; color: var(--green); }
   .success-msg p { color: var(--muted); margin-top: 8px; font-size: 14px; }
-
   .vote-again-btn {
     margin-top: 20px;
     padding: 12px 32px;
@@ -277,19 +207,11 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-
   .vote-again-btn:hover { background: rgba(0,230,118,0.1); }
 
   /* ADMIN */
   .admin-gate { text-align: center; padding: 24px 0; }
-  .admin-gate h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
+  .admin-gate h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--muted); margin-bottom: 16px; }
   .pin-input {
     width: 140px;
     text-align: center;
@@ -305,9 +227,7 @@
     display: block;
     margin: 0 auto 16px;
   }
-
   .pin-input:focus { border-color: var(--green); }
-
   .pin-btn {
     padding: 12px 32px;
     background: var(--green);
@@ -319,11 +239,49 @@
     letter-spacing: 2px;
     cursor: pointer;
   }
-
   .error-msg { color: var(--red); font-size: 13px; margin-top: 8px; }
 
   .admin-content { display: none; }
   .admin-content.visible { display: block; }
+
+  /* Admin subsection tabs */
+  .admin-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px;
+  }
+  .admin-tab {
+    flex: 1;
+    padding: 10px 6px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .admin-tab .tab-icon { font-size: 20px; line-height: 1; }
+  .admin-tab .tab-label { font-size: 10px; letter-spacing: 0.5px; }
+  .admin-tab.active { background: var(--green); color: var(--dark); font-weight: 600; }
+  .admin-tab:hover:not(.active) { color: var(--green); }
+
+  .admin-subsection { display: none; }
+  .admin-subsection.active { display: block; }
 
   .admin-section {
     background: var(--card);
@@ -332,7 +290,6 @@
     padding: 20px;
     margin-bottom: 20px;
   }
-
   .admin-section-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 18px;
@@ -343,7 +300,6 @@
     align-items: center;
     gap: 8px;
   }
-
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 14px;
@@ -363,18 +319,11 @@
     font-size: 13px;
     font-weight: 500;
   }
+  .match-status.active  { background: rgba(0,230,118,0.1);  border: 1px solid var(--green);  color: var(--green);  }
+  .match-status.closed  { background: rgba(255,152,0,0.1);  border: 1px solid var(--orange); color: var(--orange); }
+  .match-status.inactive{ background: rgba(90,122,96,0.1);  border: 1px solid var(--border); color: var(--muted);  }
 
-  .match-status.active { background: rgba(0,230,118,0.1); border: 1px solid var(--green); color: var(--green); }
-  .match-status.closed { background: rgba(255,152,0,0.1); border: 1px solid var(--orange); color: var(--orange); }
-  .match-status.inactive { background: rgba(90,122,96,0.1); border: 1px solid var(--border); color: var(--muted); }
-
-  .squad-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
+  .squad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
   .squad-btn {
     padding: 10px 6px;
     background: var(--dark);
@@ -388,12 +337,10 @@
     transition: all 0.15s;
     text-align: center;
   }
-
   .squad-btn:hover { border-color: var(--green); color: var(--text); }
   .squad-btn.selected { background: rgba(0,230,118,0.15); border-color: var(--green); color: var(--green); font-weight: 600; }
 
   .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-
   .action-btn {
     flex: 1;
     padding: 12px 16px;
@@ -406,34 +353,22 @@
     transition: all 0.2s;
     min-width: 120px;
   }
-
-  .action-btn.primary { background: var(--green); color: var(--dark); }
+  .action-btn.primary   { background: var(--green); color: var(--dark); }
   .action-btn.primary:hover { box-shadow: 0 4px 16px rgba(0,230,118,0.3); }
-  .action-btn.danger { background: transparent; border: 1px solid var(--red); color: var(--red); }
+  .action-btn.danger    { background: transparent; border: 1px solid var(--red); color: var(--red); }
   .action-btn.danger:hover { background: rgba(239,83,80,0.1); }
-  .action-btn.warning { background: transparent; border: 1px solid var(--orange); color: var(--orange); }
+  .action-btn.warning   { background: transparent; border: 1px solid var(--orange); color: var(--orange); }
   .action-btn.warning:hover { background: rgba(255,152,0,0.1); }
   .action-btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); }
   .action-btn.secondary:hover { border-color: var(--muted); color: var(--text); }
-  .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .action-btn.info      { background: transparent; border: 1px solid var(--blue); color: var(--blue); }
+  .action-btn.info:hover{ background: rgba(66,165,245,0.1); }
+  .action-btn:disabled  { opacity: 0.5; cursor: not-allowed; }
 
-  .modify-panel {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .modify-panel-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
-    letter-spacing: 3px;
-    color: var(--orange);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-  }
+  .modify-panel { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .modify-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 3px; color: var(--orange); margin-bottom: 10px; text-transform: uppercase; }
 
   .attendance-list { display: flex; flex-direction: column; gap: 8px; }
-
   .attendance-row {
     display: flex;
     align-items: center;
@@ -443,18 +378,10 @@
     border: 1px solid var(--border);
     font-size: 14px;
   }
-
   .attendance-row.voted { border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.05); }
-
   .att-name { font-weight: 500; }
-  .att-status {
-    font-size: 12px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  .att-status.done { background: rgba(0,230,118,0.2); color: var(--green); }
+  .att-status { font-size: 12px; padding: 3px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px; }
+  .att-status.done    { background: rgba(0,230,118,0.2); color: var(--green); }
   .att-status.pending { background: rgba(90,122,96,0.15); color: var(--muted); }
 
   .reset-vote-btn {
@@ -471,55 +398,25 @@
   .reset-vote-btn:hover { background: rgba(239,83,80,0.15); border-color: var(--red); }
 
   .stats-bar { display: flex; gap: 12px; margin-bottom: 20px; }
-
-  .stat-card {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px;
-    text-align: center;
-  }
-
+  .stat-card { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
   .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--green); line-height: 1; }
   .stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
 
   .podium { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-
-  .podium-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-  }
-
-  .podium-row.rank-1 { border-color: var(--gold); background: rgba(255,214,0,0.05); }
-  .podium-row.rank-2 { border-color: var(--silver); background: rgba(176,190,197,0.05); }
-  .podium-row.rank-3 { border-color: var(--bronze); background: rgba(255,138,101,0.05); }
-
-  .rank-badge {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 18px; flex-shrink: 0;
-  }
-
-  .rank-1 .rank-badge { background: var(--gold); color: #111; }
-  .rank-2 .rank-badge { background: var(--silver); color: #111; }
-  .rank-3 .rank-badge { background: var(--bronze); color: #111; }
-
+  .podium-row { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .podium-row.rank-1 { border-color: var(--gold);   background: rgba(255,214,0,0.05); }
+  .podium-row.rank-2 { border-color: var(--silver);  background: rgba(176,190,197,0.05); }
+  .podium-row.rank-3 { border-color: var(--bronze);  background: rgba(255,138,101,0.05); }
+  .rank-badge { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 18px; flex-shrink: 0; }
+  .rank-1 .rank-badge { background: var(--gold);   color: #111; }
+  .rank-2 .rank-badge { background: var(--silver);  color: #111; }
+  .rank-3 .rank-badge { background: var(--bronze);  color: #111; }
   .rank-name { font-weight: 600; font-size: 15px; flex: 1; }
-  .rank-pts { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--green); }
+  .rank-pts  { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--green); }
   .rank-pts-label { font-size: 11px; color: var(--muted); text-align: right; }
 
   .full-table { width: 100%; border-collapse: collapse; }
-  .full-table th {
-    text-align: left; font-size: 11px; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--muted);
-    padding: 8px 12px; border-bottom: 1px solid var(--border);
-  }
+  .full-table th { text-align: left; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
   .full-table td { padding: 10px 12px; font-size: 14px; border-bottom: 1px solid rgba(30,46,34,0.5); }
   .full-table tr:last-child td { border-bottom: none; }
   .full-table td:last-child { text-align: right; font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--green); }
@@ -528,14 +425,7 @@
   .no-votes { text-align: center; color: var(--muted); padding: 24px 0; font-size: 14px; }
 
   .votes-log { margin-top: 8px; }
-  .log-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    font-size: 13px;
-  }
+  .log-item { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; font-size: 13px; }
   .log-voter { font-weight: 600; color: var(--text); margin-bottom: 4px; }
   .log-match { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
   .log-picks { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -545,136 +435,136 @@
   .log-pick.p3 { background: rgba(255,138,101,0.15); color: var(--bronze); }
 
   .select-all-row { display: flex; gap: 8px; margin-bottom: 12px; }
-  .mini-btn {
-    padding: 6px 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
+  .mini-btn { padding: 6px 12px; background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; }
   .mini-btn:hover { border-color: var(--green); color: var(--green); }
 
-  .archive-item {
-    background: rgba(255,214,0,0.03);
-    border: 1px solid rgba(255,214,0,0.15);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    font-size: 13px;
-  }
+  .archive-item { background: rgba(255,214,0,0.03); border: 1px solid rgba(255,214,0,0.15); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; font-size: 13px; }
   .archive-match { font-weight: 600; color: var(--text); margin-bottom: 6px; font-size: 14px; }
-  .archive-date { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .archive-date  { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
   .archive-picks { display: flex; gap: 8px; flex-wrap: wrap; }
-  .archive-pick { font-size: 12px; padding: 3px 10px; border-radius: 4px; }
+  .archive-pick  { font-size: 12px; padding: 3px 10px; border-radius: 4px; }
   .archive-pick.s1 { background: rgba(255,214,0,0.15); color: var(--gold); }
   .archive-pick.s2 { background: rgba(176,190,197,0.15); color: var(--silver); }
   .archive-pick.s3 { background: rgba(255,138,101,0.15); color: var(--bronze); }
 
   /* Fines */
-  .fines-gate { text-align: center; padding: 24px 0; }
-  .fines-gate h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--muted); margin-bottom: 16px; }
-
-  .fines-content { display: none; }
-  .fines-content.visible { display: block; }
-
-  .fine-item {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 8px;
-  }
-
+  .fine-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; }
   .fine-item-left { flex: 1; }
   .fine-player { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; color: var(--orange); margin-bottom: 3px; }
-  .fine-desc { font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .fine-desc   { font-size: 13px; color: var(--muted); line-height: 1.4; }
   .fine-amount { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--red); white-space: nowrap; letter-spacing: 1px; }
-
-  .fines-total-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(239,83,80,0.08);
-    border: 1px solid rgba(239,83,80,0.25);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-top: 16px;
-  }
-  .fines-total-label { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; color: var(--muted); }
+  .fines-total-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(239,83,80,0.08); border: 1px solid rgba(239,83,80,0.25); border-radius: 10px; padding: 14px 16px; margin-top: 16px; }
+  .fines-total-label  { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; color: var(--muted); }
   .fines-total-amount { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--red); letter-spacing: 1px; }
-
-  .delete-fine-btn {
-    background: transparent;
-    border: 1px solid rgba(239,83,80,0.3);
-    color: var(--red);
-    border-radius: 6px;
-    width: 28px; height: 28px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s; flex-shrink: 0;
-  }
+  .delete-fine-btn { background: transparent; border: 1px solid rgba(239,83,80,0.3); color: var(--red); border-radius: 6px; width: 28px; height: 28px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
   .delete-fine-btn:hover { background: rgba(239,83,80,0.15); border-color: var(--red); }
 
-  .reset-confirm-box {
-    background: rgba(239,83,80,0.07);
-    border: 1px solid rgba(239,83,80,0.3);
-    border-radius: 10px;
-    padding: 16px;
-    margin-top: 12px;
-    display: none;
-  }
+  .reset-confirm-box { background: rgba(239,83,80,0.07); border: 1px solid rgba(239,83,80,0.3); border-radius: 10px; padding: 16px; margin-top: 12px; display: none; }
   .reset-confirm-box p { font-size: 13px; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
   .reset-confirm-box .podium-preview { margin-bottom: 12px; }
   .reset-confirm-box .podium-preview .p-row { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; }
 
-  /* Loading spinner */
-  .loading-spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid var(--border);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
+  .action-btn.warning:disabled { opacity: 0.35; cursor: not-allowed; border-color: var(--border); color: var(--muted); }
+  .action-btn.info:disabled    { opacity: 0.35; cursor: not-allowed; border-color: var(--border); color: var(--muted); }
+  /* Native date/time picker theming */
+  .date-picker, .time-picker {
+    color-scheme: dark;
+    cursor: pointer;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .date-picker::-webkit-calendar-picker-indicator,
+  .time-picker::-webkit-calendar-picker-indicator {
+    filter: invert(0.6) sepia(1) saturate(3) hue-rotate(90deg);
+    cursor: pointer;
+    opacity: 0.8;
+  }
 
-  /* Firebase config notice */
-  .config-notice {
-    background: rgba(255,152,0,0.08);
-    border: 1px solid rgba(255,152,0,0.3);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 20px;
+  .warning-confirm-box { background: rgba(255,152,0,0.07); border: 1px solid rgba(255,152,0,0.3); border-radius: 10px; padding: 16px; margin-top: 12px; display: none; }
+  .warning-confirm-box p { font-size: 13px; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
+
+  /* Availability page */
+  .game-info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+  .game-info-card.has-game { border-color: rgba(0,230,118,0.3); }
+  .game-info-title { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 3px; color: var(--muted); margin-bottom: 12px; }
+  .game-info-detail { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; margin-bottom: 8px; }
+  .game-info-detail:last-child { margin-bottom: 0; }
+  .game-info-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .game-info-text { color: var(--text); }
+  .game-info-text a { color: var(--green); text-decoration: none; }
+  .game-info-text a:hover { text-decoration: underline; }
+
+  .avail-status-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+  .avail-status-btn {
+    padding: 14px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
     font-size: 13px;
-    color: var(--orange);
-    line-height: 1.6;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    line-height: 1.4;
   }
-  .config-notice strong { color: var(--text); }
-  .config-notice code {
-    background: rgba(0,0,0,0.3);
-    padding: 1px 6px;
-    border-radius: 4px;
+  .avail-status-btn:hover { border-color: var(--green); color: var(--text); }
+  .avail-status-btn.sel-available { background: rgba(0,230,118,0.15); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .avail-status-btn.sel-injured   { background: rgba(239,83,80,0.15);  border-color: var(--red);    color: var(--red);    font-weight: 600; }
+  .avail-status-btn.sel-away      { background: rgba(66,165,245,0.15); border-color: var(--blue);   color: var(--blue);   font-weight: 600; }
+  .avail-status-btn.sel-pending   { background: rgba(255,152,0,0.15);  border-color: var(--orange); color: var(--orange); font-weight: 600; }
+
+  /* Availability table */
+  .avail-table-wrap { margin-top: 8px; }
+  .avail-col-header {
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 12px;
-    color: var(--green);
+    letter-spacing: 2px;
+    padding: 6px 8px 4px;
+    border-radius: 6px 6px 0 0;
+    text-align: center;
+    margin-bottom: 2px;
   }
+  .avail-col-header.col-available { background: rgba(0,230,118,0.15); color: var(--green); }
+  .avail-col-header.col-injured   { background: rgba(239,83,80,0.15);  color: var(--red); }
+  .avail-col-header.col-away      { background: rgba(66,165,245,0.15); color: var(--blue); }
+  .avail-col-header.col-pending   { background: rgba(255,152,0,0.15);  color: var(--orange); }
+  .avail-col-header.col-noresponse{ background: rgba(90,122,96,0.1);   color: var(--muted); }
+
+  .avail-table { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .avail-col { display: flex; flex-direction: column; gap: 4px; }
+  .avail-name-chip {
+    padding: 5px 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .avail-name-chip.col-available { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.25); }
+  .avail-name-chip.col-injured   { background: rgba(239,83,80,0.12);  color: var(--red);   border: 1px solid rgba(239,83,80,0.25); }
+  .avail-name-chip.col-away      { background: rgba(66,165,245,0.12); color: var(--blue);  border: 1px solid rgba(66,165,245,0.25); }
+  .avail-name-chip.col-pending   { background: rgba(255,152,0,0.12);  color: var(--orange);border: 1px solid rgba(255,152,0,0.25); }
+  .avail-name-chip.col-noresponse{ background: rgba(90,122,96,0.08);  color: var(--muted); border: 1px solid rgba(90,122,96,0.2); }
+
+  .avail-success-msg { text-align: center; padding: 16px 0 8px; display: none; }
+  .avail-success-msg span { color: var(--green); font-size: 14px; font-weight: 600; }
+
+  /* Loading spinner */
+  .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
 <header>
   <h1>FKFC O35s</h1>
-  <p>Player of the Match · Vote after every game</p>
+  <p>Player of the Match · Vote after every match</p>
 </header>
 
 <div class="sync-bar">
@@ -684,11 +574,11 @@
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('vote', event)">⚽ Vote</button>
-  <button class="tab" onclick="showTab('fines', event)">💸 Fines</button>
+  <button class="tab" onclick="showTab('availability', event)">📋 Availability</button>
   <button class="tab" onclick="showTab('admin', event)">🏆 Admin</button>
 </div>
 
-<!-- VOTE PAGE -->
+<!-- ===================== VOTE PAGE ===================== -->
 <div id="page-vote" class="page active">
 
   <div id="locked-view" class="locked-msg" style="display:none">
@@ -708,7 +598,7 @@
       <div class="podium" id="closed-podium"></div>
       <div id="closed-full-standings"></div>
       <div id="closed-fines-section" style="display:none;margin-top:24px">
-        <div class="section-title" style="margin-bottom:12px">💸 Match Fines</div>
+        <div class="section-title" style="margin-bottom:12px">💸 Fines</div>
         <div id="closed-fines-list"></div>
         <div id="closed-fines-total"></div>
       </div>
@@ -722,7 +612,6 @@
         <option value="">Select your name...</option>
       </select>
     </div>
-
     <div class="pick-section">
       <div class="pick-header">
         <div class="badge gold">1</div>
@@ -730,7 +619,6 @@
       </div>
       <div class="player-grid" id="grid-1"></div>
     </div>
-
     <div class="pick-section">
       <div class="pick-header">
         <div class="badge silver">2</div>
@@ -738,7 +626,6 @@
       </div>
       <div class="player-grid" id="grid-2"></div>
     </div>
-
     <div class="pick-section">
       <div class="pick-header">
         <div class="badge bronze">3</div>
@@ -746,7 +633,6 @@
       </div>
       <div class="player-grid" id="grid-3"></div>
     </div>
-
     <button class="submit-btn" id="submit-btn" onclick="submitVote()">Submit Vote</button>
   </div>
 
@@ -754,63 +640,61 @@
     <span class="checkmark">✅</span>
     <h2>Vote Submitted!</h2>
     <p id="success-detail"></p>
-    <button class="vote-again-btn" onclick="resetVote()">Vote for Someone Else</button>
+    <button class="vote-again-btn" onclick="goBackFromVote()">← Back to Home</button>
   </div>
 
 </div>
 
-<!-- FINES PAGE -->
-<div id="page-fines" class="page">
+<!-- ===================== AVAILABILITY PAGE ===================== -->
+<div id="page-availability" class="page">
 
-  <div class="fines-gate" id="fines-gate">
-    <h2>💸 Fines Access</h2>
-    <input class="pin-input" id="fines-pin-input" type="password" maxlength="4" placeholder="····" />
-    <div class="error-msg" id="fines-pin-error"></div>
-    <br><br>
-    <button class="pin-btn" onclick="checkFinesPin()">Enter</button>
+  <!-- Match details block — always shown -->
+  <div class="game-info-card" id="avail-game-card">
+    <div class="game-info-title">Next Match</div>
+    <div id="avail-game-content">
+      <div style="color:var(--muted);font-size:14px;text-align:center;padding:8px 0">No upcoming match posted yet.</div>
+    </div>
   </div>
 
-  <div class="fines-content" id="fines-content">
+  <!-- Everything below only shown when a match has been published -->
+  <div id="avail-main-section" style="display:none">
 
-    <div class="admin-section">
-      <div class="admin-section-title">💸 This Week's Fines</div>
-      <div id="fines-match-status-bar" style="margin-bottom:16px"></div>
+    <!-- Player select + status -->
+    <div style="margin-bottom:16px">
+      <div class="field-label">Your Name</div>
+      <select class="field-input" id="avail-name-select" style="margin-bottom:0" onchange="onAvailNameChange()">
+        <option value="">Select your name...</option>
+      </select>
+    </div>
 
-      <div id="fines-add-form">
-        <div class="field-label" style="margin-bottom:6px">Player</div>
-        <select class="field-input" id="fine-player-select" style="margin-bottom:16px">
-          <option value="">Select player...</option>
-        </select>
-
-        <div class="field-label" style="margin-bottom:6px">What did they do?</div>
-        <input class="field-input" id="fine-desc-input" placeholder="e.g. Turned up 20 mins late" style="margin-bottom:16px" />
-
-        <div class="field-label" style="margin-bottom:6px">Fine Amount ($)</div>
-        <input class="field-input" id="fine-amount-input" type="number" min="1" placeholder="e.g. 5" style="margin-bottom:16px" />
-
-        <div class="btn-row">
-          <button class="action-btn primary" onclick="addFine()">+ Add Fine</button>
-        </div>
+    <div id="avail-status-section" style="display:none">
+      <div class="field-label" style="margin-bottom:10px">Your Status</div>
+      <div class="avail-status-btns">
+        <button class="avail-status-btn" id="avail-btn-available" onclick="selectAvailStatus('available')">✅ Available</button>
+        <button class="avail-status-btn" id="avail-btn-injured"   onclick="selectAvailStatus('injured')">🤕 Out – Injured</button>
+        <button class="avail-status-btn" id="avail-btn-away"      onclick="selectAvailStatus('away')">✈️ Out – Away</button>
+        <button class="avail-status-btn" id="avail-btn-pending"   onclick="selectAvailStatus('pending')">⚠️ Available – Pending Injury</button>
       </div>
 
-      <div style="margin-top:20px">
-        <div class="section-title">Fines This Match</div>
-        <div id="fines-list-admin"></div>
-        <div id="fines-total-admin"></div>
+      <button class="submit-btn" id="avail-submit-btn" onclick="submitAvailability()" style="margin-top:0;margin-bottom:16px">Save Availability</button>
+      <div class="avail-success-msg" id="avail-success-msg">
+        <span>✅ Availability saved!</span>
       </div>
     </div>
 
-    <div class="admin-section">
-      <div class="admin-section-title">🏴‍☠️ Season Fines</div>
-      <div class="section-title">Total fines per player (all matches)</div>
-      <div id="season-fines-standings"></div>
+    <!-- Live availability table -->
+    <div style="margin-top:8px">
+      <div class="section-title">Availability</div>
+      <div class="avail-table-wrap" id="avail-table-wrap">
+        <div class="avail-table" id="avail-table"></div>
+      </div>
     </div>
 
-  </div>
+  </div><!-- /avail-main-section -->
 
 </div>
 
-<!-- ADMIN PAGE -->
+<!-- ===================== ADMIN PAGE ===================== -->
 <div id="page-admin" class="page">
 
   <div class="admin-gate" id="admin-gate">
@@ -823,125 +707,242 @@
 
   <div class="admin-content" id="admin-content">
 
-    <div class="admin-section">
-      <div class="admin-section-title">⚙️ Match Setup</div>
+    <!-- Admin subsection tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('voting')"><span class="tab-icon">⚽</span><span class="tab-label">Voting</span></button>
+      <button class="admin-tab" onclick="showAdminTab('availability')"><span class="tab-icon">📋</span><span class="tab-label">Availability</span></button>
+      <button class="admin-tab" onclick="showAdminTab('fines')"><span class="tab-icon">💸</span><span class="tab-label">Fines</span></button>
+    </div>
 
-      <div id="match-status-bar"></div>
+    <!-- ---- SUBSECTION 1: VOTING ADMIN ---- -->
+    <div class="admin-subsection active" id="admin-sub-voting">
 
-      <div id="setup-form">
-        <div class="field-label" style="margin-bottom:6px">Match Name</div>
-        <input class="field-input" id="admin-match-name" placeholder="e.g. vs Lions – 20 Apr" style="margin-bottom:16px" />
+      <div class="admin-section">
+        <div class="admin-section-title">⚙️ Match Setup</div>
+        <div id="match-status-bar"></div>
 
-        <div class="field-label" style="margin-bottom:8px">Who Played Today?</div>
-        <div class="select-all-row">
-          <button class="mini-btn" onclick="selectAllSquad()">Select All</button>
-          <button class="mini-btn" onclick="clearSquad()">Clear</button>
+        <div id="setup-form">
+          <div class="field-label" style="margin-bottom:6px">Match Name</div>
+          <input class="field-input" id="admin-match-name" placeholder="e.g. vs Lions – 20 Apr" style="margin-bottom:16px" />
+          <div class="field-label" style="margin-bottom:8px">Who Played Today?</div>
+          <div class="select-all-row">
+            <button class="mini-btn" onclick="selectAllSquad()">Select All</button>
+            <button class="mini-btn" onclick="clearSquad()">Clear</button>
+          </div>
+          <div class="squad-grid" id="squad-grid"></div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;margin-top:-4px">
+            <input class="field-input" id="new-player-input" placeholder="Add new player..." style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addNewPlayer()" />
+            <button class="action-btn primary" style="flex:none;padding:12px 16px;font-size:14px;min-width:auto" onclick="addNewPlayer()">+ Add</button>
+          </div>
+          <div class="btn-row">
+            <button class="action-btn primary" onclick="openVoting()">Open Voting</button>
+          </div>
         </div>
-        <div class="squad-grid" id="squad-grid"></div>
-        <div style="display:flex;gap:8px;margin-bottom:16px;margin-top:-4px">
-          <input class="field-input" id="new-player-input" placeholder="Add new player..." style="margin-bottom:0;flex:1" onkeydown="if(event.key==='Enter')addNewPlayer()" />
-          <button class="action-btn primary" style="flex:none;padding:12px 16px;font-size:14px;min-width:auto" onclick="addNewPlayer()">+ Add</button>
+
+        <div id="active-controls" style="display:none">
+          <div class="btn-row" style="margin-bottom:10px">
+            <button class="action-btn secondary" onclick="toggleModify()">✏️ Modify Squad</button>
+            <button class="action-btn warning" id="close-voting-btn" onclick="showCloseConfirm()" disabled title="You must press Close for Fines first">🛑 Close Voting</button>
+          </div>
+          <!-- Close for Fines button -->
+          <div class="btn-row" style="margin-bottom:10px">
+            <button class="action-btn info" id="close-for-fines-btn" onclick="showCloseForFinesConfirm()">💸 Close for Fines</button>
+          </div>
+
+          <div class="reset-confirm-box" id="close-confirm-box" style="display:none">
+            <p>Close voting? Players will no longer be able to vote. You can reopen it later if needed.</p>
+            <div class="btn-row">
+              <button class="action-btn warning"   onclick="closeVoting()">Yes, Close Voting</button>
+              <button class="action-btn secondary" onclick="hideCloseConfirm()">Cancel</button>
+            </div>
+          </div>
+
+          <!-- Close for Fines confirm -->
+          <div class="warning-confirm-box" id="close-for-fines-confirm-box">
+            <p>Issue fines to all squad members who haven't voted yet? Voting will remain open. Fine amounts escalate per player's voting offense history.</p>
+            <div class="btn-row">
+              <button class="action-btn info"      onclick="closeForFines()">Yes, Issue Fines</button>
+              <button class="action-btn secondary" onclick="hideCloseForFinesConfirm()">Cancel</button>
+            </div>
+          </div>
+
+          <div class="modify-panel" id="modify-panel" style="display:none">
+            <div class="modify-panel-title">Modify Squad — tick/untick players</div>
+            <div class="select-all-row">
+              <button class="mini-btn" onclick="selectAllModify()">Select All</button>
+              <button class="mini-btn" onclick="clearModify()">Clear</button>
+            </div>
+            <div class="squad-grid" id="modify-grid"></div>
+            <div class="btn-row">
+              <button class="action-btn primary"   onclick="saveModify()">Save Changes</button>
+              <button class="action-btn secondary" onclick="cancelModify()">Cancel</button>
+            </div>
+          </div>
         </div>
+
+        <div id="closed-controls" style="display:none">
+          <div class="btn-row" style="margin-bottom:10px">
+            <button class="action-btn primary" onclick="reopenVoting()">▶️ Reopen Voting</button>
+            <button class="action-btn danger"  onclick="showResetConfirm()">🏅 Reset & Archive</button>
+          </div>
+          <div class="reset-confirm-box" id="reset-confirm-box">
+            <p>This will archive the match results and award season points to the top 3 players. <strong>This cannot be undone.</strong></p>
+            <div class="podium-preview" id="reset-podium-preview"></div>
+            <div class="btn-row">
+              <button class="action-btn danger"    id="confirm-archive-btn" onclick="confirmReset()">Confirm Archive</button>
+              <button class="action-btn secondary" onclick="hideResetConfirm()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-section" id="attendance-section" style="display:none">
+        <div class="admin-section-title">📋 Attendance</div>
+        <div class="stats-bar">
+          <div class="stat-card"><div class="stat-num" id="stat-voted">0</div><div class="stat-lbl">Voted</div></div>
+          <div class="stat-card"><div class="stat-num" id="stat-remaining">0</div><div class="stat-lbl">Not Yet</div></div>
+        </div>
+        <div class="attendance-list" id="attendance-list"></div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">🏆 Match Leaderboard</div>
+        <div class="section-title">Top 3 This Match</div>
+        <div class="podium" id="podium"></div>
+        <div class="section-title">Full Standings</div>
+        <div id="full-standings"></div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">🏅 Season Leaderboard</div>
+        <div class="section-title">Cumulative season points</div>
+        <div id="season-standings-admin"></div>
+        <div style="margin-top:20px">
+          <div class="section-title">Match Archive</div>
+          <div id="archive-log"></div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="action-btn danger" style="font-size:13px;padding:8px 14px;letter-spacing:1px;flex:none;" onclick="clearSeasonData()">🗑 Clear Season Data</button>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">📝 Vote Log</div>
+        <div class="votes-log" id="vote-log"></div>
+      </div>
+
+    </div><!-- /admin-sub-voting -->
+
+    <!-- ---- SUBSECTION 2: AVAILABILITY ADMIN ---- -->
+    <div class="admin-subsection" id="admin-sub-availability">
+
+      <div class="admin-section">
+        <div class="admin-section-title">📅 Upcoming Match Details</div>
+
+        <div class="field-label" style="margin-bottom:6px">Date</div>
+        <input class="field-input date-picker" id="admin-game-date" type="date" style="margin-bottom:16px" />
+
+        <div class="field-label" style="margin-bottom:6px">Time</div>
+        <select class="field-input time-picker" id="admin-game-time" style="margin-bottom:16px"></select>
+
+        <div class="field-label" style="margin-bottom:6px">Location</div>
+        <input class="field-input" id="admin-game-location" placeholder="e.g. Lakeside Park Oval" style="margin-bottom:16px" />
+
+        <div class="field-label" style="margin-bottom:6px">Google Maps Link</div>
+        <input class="field-input" id="admin-game-maps"     placeholder="https://maps.google.com/..." style="margin-bottom:16px" />
 
         <div class="btn-row">
-          <button class="action-btn primary" onclick="openVoting()">Open Voting</button>
+          <button class="action-btn primary" id="publish-match-btn" onclick="publishGameDetails()">📢 Publish Match Details</button>
         </div>
+        <div id="game-publish-confirm" style="display:none;margin-top:10px;color:var(--green);font-size:13px">✅ Match details published!</div>
       </div>
 
-      <div id="active-controls" style="display:none">
-        <div class="btn-row" style="margin-bottom:10px">
-          <button class="action-btn secondary" onclick="toggleModify()">✏️ Modify Squad</button>
-          <button class="action-btn warning" onclick="showCloseConfirm()">🛑 Close Voting</button>
+      <div class="admin-section">
+        <div class="admin-section-title">📋 Current Availability</div>
+        <div id="admin-avail-table-wrap">
+          <div class="no-votes">Loading...</div>
         </div>
 
-        <div class="reset-confirm-box" id="close-confirm-box" style="display:none">
-          <p>Close voting? Players will no longer be able to vote. You can reopen it later if needed.</p>
+        <div style="margin-top:16px">
           <div class="btn-row">
-            <button class="action-btn warning" onclick="closeVoting()">Yes, Close Voting</button>
-            <button class="action-btn secondary" onclick="hideCloseConfirm()">Cancel</button>
+            <button class="action-btn warning" id="close-avail-btn" onclick="showCloseAvailConfirm()">💸 Issue Fines for Availability</button>
+          </div>
+
+          <!-- Close Availability confirm -->
+          <div class="warning-confirm-box" id="close-avail-confirm-box">
+            <p>Issue fines to all roster players who haven't submitted availability yet? Fine amounts escalate per player's availability offense history.</p>
+            <div class="btn-row">
+              <button class="action-btn warning"   onclick="closeAvailability()">Yes, Issue Fines</button>
+              <button class="action-btn secondary" onclick="hideCloseAvailConfirm()">Cancel</button>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="btn-row">
+              <button class="action-btn danger" onclick="showResetAvailConfirm()">🗑 Reset Availability</button>
+            </div>
+            <!-- Reset Availability confirm -->
+            <div class="reset-confirm-box" id="reset-avail-confirm-box" style="margin-top:10px">
+              <p>This will clear all player availability selections <strong>and</strong> the published match details. Cannot be undone.</p>
+              <div class="btn-row">
+                <button class="action-btn danger"    onclick="resetAvailability()">Yes, Reset</button>
+                <button class="action-btn secondary" onclick="hideResetAvailConfirm()">Cancel</button>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div class="modify-panel" id="modify-panel" style="display:none">
-          <div class="modify-panel-title">Modify Squad — tick/untick players</div>
-          <div class="select-all-row">
-            <button class="mini-btn" onclick="selectAllModify()">Select All</button>
-            <button class="mini-btn" onclick="clearModify()">Clear</button>
-          </div>
-          <div class="squad-grid" id="modify-grid"></div>
+    </div><!-- /admin-sub-availability -->
+
+    <!-- ---- SUBSECTION 3: FINES ADMIN ---- -->
+    <div class="admin-subsection" id="admin-sub-fines">
+
+      <div class="admin-section">
+        <div class="admin-section-title">💸 This Week's Fines</div>
+        <div id="fines-match-status-bar" style="margin-bottom:16px"></div>
+
+        <div id="fines-add-form">
+          <div class="field-label" style="margin-bottom:6px">Player</div>
+          <select class="field-input" id="fine-player-select" style="margin-bottom:16px">
+            <option value="">Select player...</option>
+          </select>
+          <div class="field-label" style="margin-bottom:6px">What did they do?</div>
+          <input class="field-input" id="fine-desc-input" placeholder="e.g. Turned up 20 mins late" style="margin-bottom:16px" />
+          <div class="field-label" style="margin-bottom:6px">Fine Amount ($)</div>
+          <input class="field-input" id="fine-amount-input" type="number" min="1" placeholder="e.g. 5" style="margin-bottom:16px" />
           <div class="btn-row">
-            <button class="action-btn primary" onclick="saveModify()">Save Changes</button>
-            <button class="action-btn secondary" onclick="cancelModify()">Cancel</button>
+            <button class="action-btn primary" onclick="addFine()">+ Add Fine</button>
+          </div>
+        </div>
+
+        <div style="margin-top:20px">
+          <div class="section-title">Fines This Match</div>
+          <div id="fines-list-admin"></div>
+          <div id="fines-total-admin"></div>
+          <div style="margin-top:12px">
+            <button class="action-btn danger" style="font-size:13px;padding:8px 14px;letter-spacing:1px;flex:none;" onclick="showDeleteAllFinesConfirm()">🗑 Delete All Fines</button>
+          </div>
+          <div class="reset-confirm-box" id="delete-all-fines-confirm-box" style="margin-top:10px">
+            <p>Delete <strong>all fines</strong> for this match? This cannot be undone.</p>
+            <div class="btn-row">
+              <button class="action-btn danger"    onclick="deleteAllFines()">Yes, Delete All</button>
+              <button class="action-btn secondary" onclick="hideDeleteAllFinesConfirm()">Cancel</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="closed-controls" style="display:none">
-        <div class="btn-row" style="margin-bottom:10px">
-          <button class="action-btn primary" onclick="reopenVoting()">▶️ Reopen Voting</button>
-          <button class="action-btn danger" onclick="showResetConfirm()">🏅 Reset & Archive</button>
-        </div>
-
-        <div class="reset-confirm-box" id="reset-confirm-box">
-          <p>This will archive the match results and award season points to the top 3 players. <strong>This cannot be undone.</strong></p>
-          <div class="podium-preview" id="reset-podium-preview"></div>
-          <div class="btn-row">
-            <button class="action-btn danger" id="confirm-archive-btn" onclick="confirmReset()">Confirm Archive</button>
-            <button class="action-btn secondary" onclick="hideResetConfirm()">Cancel</button>
-          </div>
-        </div>
+      <div class="admin-section">
+        <div class="admin-section-title">🏴‍☠️ Season Fines</div>
+        <div class="section-title">Total fines per player (all matches)</div>
+        <div id="season-fines-admin"></div>
       </div>
-    </div>
 
-    <div class="admin-section" id="attendance-section" style="display:none">
-      <div class="admin-section-title">📋 Attendance</div>
-      <div class="stats-bar">
-        <div class="stat-card">
-          <div class="stat-num" id="stat-voted">0</div>
-          <div class="stat-lbl">Voted</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="stat-remaining">0</div>
-          <div class="stat-lbl">Not Yet</div>
-        </div>
-      </div>
-      <div class="attendance-list" id="attendance-list"></div>
-    </div>
+    </div><!-- /admin-sub-fines -->
 
-    <div class="admin-section">
-      <div class="admin-section-title">🏆 Match Leaderboard</div>
-      <div class="section-title">Top 3 This Match</div>
-      <div class="podium" id="podium"></div>
-      <div class="section-title">Full Standings</div>
-      <div id="full-standings"></div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">🏅 Season Leaderboard</div>
-      <div class="section-title">Cumulative season points</div>
-      <div id="season-standings-admin"></div>
-      <div style="margin-top:20px">
-        <div class="section-title">Match Archive</div>
-        <div id="archive-log"></div>
-      </div>
-      <div style="margin-top:16px">
-        <button class="action-btn danger" style="font-size:13px;padding:8px 14px;letter-spacing:1px;flex:none;" onclick="clearSeasonData()">🗑 Clear Season Data</button>
-      </div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">🏴‍☠️ Season Fines Leaderboard</div>
-      <div class="section-title">Total fines owed per player</div>
-      <div id="season-fines-admin"></div>
-    </div>
-
-    <div class="admin-section">
-      <div class="admin-section-title">📝 Vote Log</div>
-      <div class="votes-log" id="vote-log"></div>
-    </div>
-
-  </div>
-</div>
+  </div><!-- /admin-content -->
+</div><!-- /page-admin -->
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -966,42 +967,64 @@
   const app = initializeApp(firebaseConfig);
   const db  = getDatabase(app);
 
-  // ---- Sync indicator ----
   const syncDot   = document.getElementById('sync-dot');
   const syncLabel = document.getElementById('sync-label');
-
   function setSync(state) {
     syncDot.className = 'sync-dot ' + state;
     syncLabel.textContent = state === 'live' ? 'Live' : state === 'error' ? 'Connection error' : 'Connecting...';
   }
 
-  // ---- DB helpers ----
   const dbRef = (path) => ref(db, path);
-
-  async function dbGet(path) {
-    const snap = await get(dbRef(path));
-    return snap.exists() ? snap.val() : null;
-  }
-
+  async function dbGet(path) { const snap = await get(dbRef(path)); return snap.exists() ? snap.val() : null; }
   async function dbSet(path, val) { await set(dbRef(path), val); }
   async function dbRemove(path)   { await remove(dbRef(path)); }
-
   function dbListen(path, cb) {
-    onValue(dbRef(path), snap => {
-      setSync('live');
-      cb(snap.exists() ? snap.val() : null);
-    }, () => setSync('error'));
+    onValue(dbRef(path), snap => { setSync('live'); cb(snap.exists() ? snap.val() : null); }, () => setSync('error'));
   }
 
-  // ---- App State (mirrors Firebase in memory) ----
+  // ============================================================
+  // localStorage helpers for new keys
+  // ============================================================
+  function lsGet(key) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; }
+  }
+  function lsSet(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  }
+
+  // Keys:
+  // fp_availability   – { playerName: 'available'|'injured'|'away'|'pending' }
+  // fp_next_game      – { date, time, location, maps }
+  // fp_vote_offenses  – { playerName: count }
+  // fp_avail_offenses – { playerName: count }
+
+  function getAvailability()    { return lsGet('fp_availability')   || {}; }
+  function getNextGame()        { return lsGet('fp_next_game')      || null; }
+  function getVoteOffenses()    { return lsGet('fp_vote_offenses')  || {}; }
+  function getAvailOffenses()   { return lsGet('fp_avail_offenses') || {}; }
+
+  function setAvailability(v)   { lsSet('fp_availability',   v); }
+  function setNextGame(v)       { lsSet('fp_next_game',      v); }
+  function setVoteOffenses(v)   { lsSet('fp_vote_offenses',  v); }
+  function setAvailOffenses(v)  { lsSet('fp_avail_offenses', v); }
+
+  // Fine amount for offense number (1-indexed)
+  function offenseFineAmount(count) {
+    // 1st: $5, 2nd: $10, 3rd: $15, +$5 each after
+    return Math.max(5, count * 5);
+  }
+
+  // ============================================================
+  // App State
+  // ============================================================
   let state = {
-    match:      null,
-    votes:      {},
-    roster:     null,
-    seasonPts:  {},
-    archive:    [],
-    matchFines: {},
-    seasonFines:{}
+    match:       null,
+    votes:       {},
+    roster:      null,
+    seasonPts:   {},
+    archive:     [],
+    matchFines:  {},
+    seasonFines: {}
   };
 
   const DEFAULT_PLAYERS = [
@@ -1011,40 +1034,54 @@
     "Mitch","Nathan","Nick","Rohnan","Scott","Tom","Tristan"
   ];
 
-  const PIN       = "1234";
-  const FINES_PIN = "5678";
+  const PIN = "1234";
 
-  let picks        = { 1: null, 2: null, 3: null };
+  let picks         = { 1: null, 2: null, 3: null };
   let selectedSquad = [];
   let modifySquad   = [];
+  let selectedAvailStatus = null; // for public availability page
 
   function getAllPlayers() { return state.roster || [...DEFAULT_PLAYERS]; }
 
   // ---- Real-time listeners ----
-  dbListen('match',       v => { state.match = v;       onDataChange(); });
-  dbListen('votes',       v => { state.votes = v || {};  onDataChange(); });
-  dbListen('roster',      v => { state.roster = v;      onDataChange(); });
-  dbListen('seasonPts',   v => { state.seasonPts = v || {}; onDataChange(); });
-  dbListen('archive',     v => { state.archive = v ? Object.values(v).reverse() : []; onDataChange(); });
-  dbListen('matchFines',  v => { state.matchFines = v || {}; onDataChange(); });
-  dbListen('seasonFines', v => { state.seasonFines = v || {}; onDataChange(); });
+  dbListen('match',       v => { state.match       = v;                    onDataChange(); });
+  dbListen('votes',       v => { state.votes       = v || {};              onDataChange(); });
+  dbListen('roster',      v => { state.roster      = v;                    onDataChange(); });
+  dbListen('seasonPts',   v => { state.seasonPts   = v || {};              onDataChange(); });
+  dbListen('archive',     v => { state.archive     = v ? Object.values(v).reverse() : []; onDataChange(); });
+  dbListen('matchFines',  v => { state.matchFines  = v || {};              onDataChange(); });
+  dbListen('seasonFines', v => { state.seasonFines = v || {};              onDataChange(); });
 
   function onDataChange() {
     const activeTab = document.querySelector('.page.active').id.replace('page-','');
-    if (activeTab === 'vote')  initVotePage();
-    if (activeTab === 'admin' && document.getElementById('admin-content').classList.contains('visible')) renderAdmin();
-    if (activeTab === 'fines' && document.getElementById('fines-content').classList.contains('visible')) renderFinesPage();
+    if (activeTab === 'vote')         initVotePage();
+    if (activeTab === 'availability') initAvailabilityPage();
+    if (activeTab === 'admin' && document.getElementById('admin-content').classList.contains('visible')) {
+      renderAdmin();
+    }
   }
 
-  // ---- Expose to global scope for onclick handlers ----
+  // ============================================================
+  // TAB NAVIGATION
+  // ============================================================
   window.showTab = function(tab, e) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t  => t.classList.remove('active'));
     document.getElementById('page-' + tab).classList.add('active');
     if (e) e.target.classList.add('active');
-    if (tab === 'vote')  initVotePage();
-    if (tab === 'fines' && document.getElementById('fines-content').classList.contains('visible')) renderFinesPage();
+    if (tab === 'vote')         initVotePage();
+    if (tab === 'availability') initAvailabilityPage();
     if (tab === 'admin' && document.getElementById('admin-content').classList.contains('visible')) renderAdmin();
+  };
+
+  window.showAdminTab = function(sub) {
+    document.querySelectorAll('.admin-subsection').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('admin-sub-' + sub).classList.add('active');
+    const btn = event.target.closest('.admin-tab');
+    if (btn) btn.classList.add('active');
+    if (sub === 'fines') renderFinesAdmin();
+    if (sub === 'availability') renderAdminAvailability();
   };
 
   // ============================================================
@@ -1057,26 +1094,24 @@
     const form    = document.getElementById('vote-form');
     const success = document.getElementById('success-msg');
 
-    if (success.style.display === 'block') return; // don't interrupt success screen
+    if (success.style.display === 'block') {
+      // If voting just closed while success screen was showing, move to closed view
+      if (!match || !match.open) {
+        success.style.display = 'none';
+        form.style.display = 'none';
+      } else {
+        return; // still open — don't interrupt success screen
+      }
+    }
 
     if (!match) {
-      locked.style.display = 'block';
-      closed.style.display = 'none';
-      form.style.display   = 'none';
-      return;
+      locked.style.display = 'block'; closed.style.display = 'none'; form.style.display = 'none'; return;
     }
-
     if (!match.open) {
-      locked.style.display = 'none';
-      closed.style.display = 'block';
-      form.style.display   = 'none';
-      renderClosedLeaderboard();
-      return;
+      locked.style.display = 'none'; closed.style.display = 'block'; form.style.display = 'none';
+      renderClosedLeaderboard(); return;
     }
-
-    locked.style.display = 'none';
-    closed.style.display = 'none';
-    form.style.display   = 'block';
+    locked.style.display = 'none'; closed.style.display = 'none'; form.style.display = 'block';
 
     const votedAlready     = getVotedNames(match.name);
     const remainingPlayers = match.squad.filter(p => !votedAlready.includes(p));
@@ -1085,82 +1120,84 @@
     sel.innerHTML = '<option value="">Select your name...</option>';
     remainingPlayers.forEach(p => {
       const opt = document.createElement('option');
-      opt.value = p; opt.textContent = p;
-      sel.appendChild(opt);
+      opt.value = p; opt.textContent = p; sel.appendChild(opt);
     });
     if (currentVal && remainingPlayers.includes(currentVal)) sel.value = currentVal;
 
-    sel.onchange = () => {
-      picks = { 1: null, 2: null, 3: null };
-      buildVoteGrids(match.squad);
-      refreshVoteGrids();
-    };
-
+    sel.onchange = () => { picks = { 1: null, 2: null, 3: null }; buildVoteGrids(match.squad); refreshVoteGrids(); };
     buildVoteGrids(match.squad);
   }
 
   function getVotedNames(matchName) {
-    return Object.values(state.votes)
-      .filter(v => v.matchName === matchName)
-      .map(v => v.voter);
+    return Object.values(state.votes).filter(v => v.matchName === matchName).map(v => v.voter);
   }
 
   function renderClosedLeaderboard() {
     const sorted = getMatchTally();
     const rankClasses = ['rank-1','rank-2','rank-3'];
-    const podiumEl = document.getElementById('closed-podium');
+    const matchPts    = [3, 2, 1];
+    const podiumEl    = document.getElementById('closed-podium');
 
-    if (sorted.length === 0) {
-      podiumEl.innerHTML = '<div class="no-votes">No votes were recorded.</div>';
-    } else {
-      podiumEl.innerHTML = sorted.slice(0,3).map(([name,pts],i) =>
-        '<div class="podium-row ' + rankClasses[i] + '">' +
+    podiumEl.innerHTML = sorted.length === 0
+      ? '<div class="no-votes">No votes were recorded.</div>'
+      : sorted.slice(0,3).map(([name],i) =>
+          '<div class="podium-row ' + rankClasses[i] + '">' +
           '<div class="rank-badge">' + (i+1) + '</div>' +
           '<div class="rank-name">' + name + '</div>' +
-          '<div><div class="rank-pts">' + pts + '</div><div class="rank-pts-label">pts</div></div>' +
-        '</div>'
-      ).join('');
-    }
+          '<div><div class="rank-pts">' + matchPts[i] + '</div><div class="rank-pts-label">pts</div></div></div>'
+        ).join('');
 
-    const standingsEl = document.getElementById('closed-full-standings');
-    if (sorted.length > 3) {
-      standingsEl.innerHTML = '<table class="full-table" style="margin-top:12px"><thead><tr><th>#</th><th>Player</th><th>Points</th></tr></thead><tbody>' +
-        sorted.map(([name,pts],i) => '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td>' + pts + '</td></tr>').join('') +
-        '</tbody></table>';
-    } else {
-      standingsEl.innerHTML = '';
-    }
+    // No full standings table on public view — top 3 only
+    document.getElementById('closed-full-standings').innerHTML = '';
 
-    const finesArr = Object.values(state.matchFines);
-    const finesSec  = document.getElementById('closed-fines-section');
-    const finesList = document.getElementById('closed-fines-list');
-    const finesTotal= document.getElementById('closed-fines-total');
-    if (finesArr.length > 0) {
-      finesSec.style.display = 'block';
-      finesList.innerHTML = finesArr.map(f =>
-        '<div class="fine-item">' +
-          '<div class="fine-item-left"><div class="fine-player">' + f.player + '</div><div class="fine-desc">' + f.desc + '</div></div>' +
-          '<div class="fine-amount">$' + f.amount + '</div>' +
-        '</div>'
-      ).join('');
-      const total = finesArr.reduce((s, f) => s + Number(f.amount), 0);
-      finesTotal.innerHTML = '<div class="fines-total-bar"><span class="fines-total-label">Total This Match</span><span class="fines-total-amount">$' + total + '</span></div>';
-    } else {
+    const allFines    = Object.values(state.matchFines);
+    const finesSec    = document.getElementById('closed-fines-section');
+    const finesList   = document.getElementById('closed-fines-list');
+    const finesTotal  = document.getElementById('closed-fines-total');
+
+    if (allFines.length === 0) {
       finesSec.style.display = 'none';
+    } else {
+      finesSec.style.display = 'block';
+
+      // Split: manual (funny) vs auto offense fines
+      const isOffense = f => /voting offense|availability offense/i.test(f.desc);
+      const manualFines  = allFines.filter(f => !isOffense(f)).sort((a,b) => a.player.localeCompare(b.player));
+      const offenseFines = allFines.filter(f =>  isOffense(f)).sort((a,b) => a.player.localeCompare(b.player));
+
+      function fineItemHtml(f) {
+        return '<div class="fine-item"><div class="fine-item-left"><div class="fine-player">' + f.player + '</div>' +
+          '<div class="fine-desc">' + f.desc + '</div></div><div class="fine-amount">$' + f.amount + '</div></div>';
+      }
+
+      let html = '';
+
+      if (manualFines.length > 0) {
+        html += '<div class="section-title" style="margin-bottom:10px">😂 Match Fines</div>';
+        html += manualFines.map(fineItemHtml).join('');
+      }
+
+      if (offenseFines.length > 0) {
+        html += '<div class="section-title" style="margin-bottom:10px;margin-top:' + (manualFines.length > 0 ? '20px' : '0') + '">📋 Voting & Availability Fines</div>';
+        html += offenseFines.map(fineItemHtml).join('');
+      }
+
+      finesList.innerHTML = html;
+
+      const total = allFines.reduce((s, f) => s + Number(f.amount), 0);
+      finesTotal.innerHTML = '<div class="fines-total-bar"><span class="fines-total-label">Total This Match</span><span class="fines-total-amount">$' + total + '</span></div>';
     }
   }
 
   function buildVoteGrids(squad) {
-    const voter = document.getElementById('voter-select').value;
+    const voter    = document.getElementById('voter-select').value;
     const eligible = voter ? squad.filter(p => p !== voter) : squad;
     [1,2,3].forEach(rank => {
       const grid = document.getElementById('grid-' + rank);
       grid.innerHTML = '';
       eligible.forEach(p => {
         const btn = document.createElement('button');
-        btn.className = 'player-btn';
-        btn.textContent = p;
-        btn.dataset.player = p;
+        btn.className = 'player-btn'; btn.textContent = p; btn.dataset.player = p;
         btn.onclick = () => selectPlayer(rank, p);
         grid.appendChild(btn);
       });
@@ -1187,47 +1224,140 @@
 
   window.submitVote = async function() {
     const voter = document.getElementById('voter-select').value;
-    if (!voter) { alert('Please select your name!'); return; }
+    if (!voter)                        { alert('Please select your name!');        return; }
     if (!picks[1] || !picks[2] || !picks[3]) { alert('Please select all 3 choices!'); return; }
-
     const match = state.match;
-    if (getVotedNames(match.name).includes(voter)) {
-      alert('You have already voted for this match!'); return;
-    }
+    if (getVotedNames(match.name).includes(voter)) { alert('You have already voted for this match!'); return; }
 
     const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading-spinner"></span>Submitting...';
-
+    btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>Submitting...';
     try {
       const voteKey = voter.replace(/\s+/g, '_') + '_' + match.name.replace(/\s+/g,'_');
-      await dbSet('votes/' + voteKey, {
-        voter,
-        matchName: match.name,
-        picks: { ...picks },
-        time: new Date().toLocaleString()
-      });
-
-      document.getElementById('success-detail').textContent =
-        voter + ' voted: 🥇 ' + picks[1] + ' · 🥈 ' + picks[2] + ' · 🥉 ' + picks[3];
-      document.getElementById('vote-form').style.display  = 'none';
+      await dbSet('votes/' + voteKey, { voter, matchName: match.name, picks: { ...picks }, time: new Date().toLocaleString() });
+      document.getElementById('success-detail').textContent = voter + ' voted: 🥇 ' + picks[1] + ' · 🥈 ' + picks[2] + ' · 🥉 ' + picks[3];
+      document.getElementById('vote-form').style.display   = 'none';
       document.getElementById('success-msg').style.display = 'block';
     } catch (err) {
-      alert('Error saving vote. Check your connection and try again.');
-      console.error(err);
+      alert('Error saving vote. Check your connection and try again.'); console.error(err);
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Submit Vote';
+      btn.disabled = false; btn.textContent = 'Submit Vote';
     }
   };
 
-  window.resetVote = function() {
+  window.goBackFromVote = function() {
     picks = { 1: null, 2: null, 3: null };
     document.getElementById('voter-select').value = '';
-    document.getElementById('vote-form').style.display  = 'block';
     document.getElementById('success-msg').style.display = 'none';
+    document.getElementById('vote-form').style.display   = 'block';
     initVotePage();
   };
+
+  window.resetVote = window.goBackFromVote;
+
+  // ============================================================
+  // AVAILABILITY PAGE (PUBLIC)
+  // ============================================================
+  function initAvailabilityPage() {
+    // Game details
+    const game = getNextGame();
+    const card = document.getElementById('avail-game-card');
+    const content = document.getElementById('avail-game-content');
+    if (game && (game.date || game.time || game.location)) {
+      card.classList.add('has-game');
+      let html = '';
+      if (game.date)     html += '<div class="game-info-detail"><span class="game-info-icon">📅</span><span class="game-info-text">' + escHtml(game.date) + '</span></div>';
+      if (game.time)     html += '<div class="game-info-detail"><span class="game-info-icon">⏰</span><span class="game-info-text">' + escHtml(game.time) + '</span></div>';
+      if (game.location) {
+        const locText = game.maps
+          ? '<a href="' + escHtml(game.maps) + '" target="_blank" rel="noopener">' + escHtml(game.location) + ' ↗</a>'
+          : escHtml(game.location);
+        html += '<div class="game-info-detail"><span class="game-info-icon">📍</span><span class="game-info-text">' + locText + '</span></div>';
+      }
+      content.innerHTML = html;
+      document.getElementById('avail-main-section').style.display = 'block';
+    } else {
+      card.classList.remove('has-game');
+      content.innerHTML = '<div style="color:var(--muted);font-size:14px;text-align:center;padding:8px 0">No upcoming match posted yet.</div>';
+      document.getElementById('avail-main-section').style.display = 'none';
+    }
+
+    // Populate name dropdown (all roster, retains selection)
+    const sel = document.getElementById('avail-name-select');
+    const currentVal = sel.value;
+    sel.innerHTML = '<option value="">Select your name...</option>';
+    getAllPlayers().forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p; opt.textContent = p; sel.appendChild(opt);
+    });
+    if (currentVal) sel.value = currentVal;
+
+    onAvailNameChange();
+    renderAvailabilityTable();
+  }
+
+  window.onAvailNameChange = function() {
+    const name = document.getElementById('avail-name-select').value;
+    const section = document.getElementById('avail-status-section');
+    if (!name) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    // Restore existing selection if any
+    const avail = getAvailability();
+    const current = avail[name] || null;
+    selectedAvailStatus = current;
+    refreshAvailStatusBtns();
+  };
+
+  function refreshAvailStatusBtns() {
+    const statusMap = { available: 'sel-available', injured: 'sel-injured', away: 'sel-away', pending: 'sel-pending' };
+    ['available','injured','away','pending'].forEach(s => {
+      const btn = document.getElementById('avail-btn-' + s);
+      btn.className = 'avail-status-btn' + (selectedAvailStatus === s ? ' ' + statusMap[s] : '');
+    });
+  }
+
+  window.selectAvailStatus = function(status) {
+    selectedAvailStatus = status;
+    refreshAvailStatusBtns();
+    document.getElementById('avail-success-msg').style.display = 'none';
+  };
+
+  window.submitAvailability = function() {
+    const name = document.getElementById('avail-name-select').value;
+    if (!name)                 { alert('Please select your name!');   return; }
+    if (!selectedAvailStatus)  { alert('Please select your status!'); return; }
+
+    const avail = getAvailability();
+    avail[name] = selectedAvailStatus;
+    setAvailability(avail);
+
+    document.getElementById('avail-success-msg').style.display = 'block';
+    renderAvailabilityTable();
+  };
+
+  function renderAvailabilityTable() {
+    const avail   = getAvailability();
+    const players = getAllPlayers();
+    const cols = {
+      available: [], injured: [], away: [], pending: [], noresponse: []
+    };
+    const statusClass = { available: 'col-available', injured: 'col-injured', away: 'col-away', pending: 'col-pending', noresponse: 'col-noresponse' };
+    const statusLabel = { available: '✅ Available', injured: '🤕 Injured', away: '✈️ Away', pending: '⚠️ Pend.', noresponse: '❓ No Response' };
+
+    players.forEach(p => {
+      const s = avail[p] || 'noresponse';
+      cols[s].push(p);
+    });
+
+    const tableEl = document.getElementById('avail-table');
+    tableEl.innerHTML = Object.keys(cols).map(col => {
+      const count = cols[col].length;
+      return '<div class="avail-col">' +
+        '<div class="avail-col-header ' + statusClass[col] + '">' + statusLabel[col] + '<br><small style="font-size:10px;opacity:0.8">' + count + '</small></div>' +
+        cols[col].map(p => '<div class="avail-name-chip ' + statusClass[col] + '">' + escHtml(p) + '</div>').join('') +
+        '</div>';
+    }).join('');
+  }
 
   // ============================================================
   // ADMIN PAGE
@@ -1256,13 +1386,8 @@
   }
 
   function toggleSquad(player, btn) {
-    if (selectedSquad.includes(player)) {
-      selectedSquad = selectedSquad.filter(p => p !== player);
-      btn.classList.remove('selected');
-    } else {
-      selectedSquad.push(player);
-      btn.classList.add('selected');
-    }
+    if (selectedSquad.includes(player)) { selectedSquad = selectedSquad.filter(p => p !== player); btn.classList.remove('selected'); }
+    else { selectedSquad.push(player); btn.classList.add('selected'); }
   }
 
   window.selectAllSquad = () => { selectedSquad = [...getAllPlayers()]; buildSquadGrid(); };
@@ -1272,9 +1397,7 @@
     const input = document.getElementById('new-player-input');
     const name  = input.value.trim();
     if (!name) { alert('Please enter a player name.'); return; }
-    if (getAllPlayers().map(p => p.toLowerCase()).includes(name.toLowerCase())) {
-      alert(name + ' is already in the squad list.'); return;
-    }
+    if (getAllPlayers().map(p => p.toLowerCase()).includes(name.toLowerCase())) { alert(name + ' is already in the squad list.'); return; }
     const updated = [...getAllPlayers(), name];
     await dbSet('roster', updated);
     selectedSquad.push(name);
@@ -1285,6 +1408,7 @@
   window.openVoting = async function() {
     if (selectedSquad.length < 3) { alert('Please select at least 3 players!'); return; }
     const name = document.getElementById('admin-match-name').value.trim() || 'Match ' + new Date().toLocaleDateString();
+    setFinesClosedMatch(null);
     await dbSet('match', { name, squad: [...selectedSquad], open: true });
   };
 
@@ -1293,25 +1417,65 @@
 
   window.closeVoting = async function() {
     hideCloseConfirm();
-    const match = { ...state.match, open: false };
-    await dbSet('match', match);
+    await dbSet('match', { ...state.match, open: false });
   };
 
   window.reopenVoting = async function() {
-    const match = { ...state.match, open: true };
-    await dbSet('match', match);
+    await dbSet('match', { ...state.match, open: true });
     hideResetConfirm();
+  };
+
+  // ---- Close for Fines ----
+  // Track which match has had fines closed so state survives page refresh
+  function getFinesClosedMatch() { return lsGet('fp_fines_closed_match') || null; }
+  function setFinesClosedMatch(name) { lsSet('fp_fines_closed_match', name); }
+
+  function updateCloseVotingBtnState() {
+    const match = state.match;
+    const cvBtn  = document.getElementById('close-voting-btn');
+    const cffBtn = document.getElementById('close-for-fines-btn');
+    if (!cvBtn || !cffBtn) return;
+    const finesDone = match && getFinesClosedMatch() === match.name;
+    cvBtn.disabled  = !finesDone;
+    cvBtn.title     = finesDone ? '' : 'You must press Close for Fines first';
+    cffBtn.disabled = !!finesDone;
+    cffBtn.title    = finesDone ? 'Fines already issued for this match' : '';
+  }
+
+  window.showCloseForFinesConfirm  = () => { document.getElementById('close-for-fines-confirm-box').style.display = 'block'; };
+  window.hideCloseForFinesConfirm  = () => { document.getElementById('close-for-fines-confirm-box').style.display = 'none'; };
+
+  window.closeForFines = async function() {
+    hideCloseForFinesConfirm();
+    const match = state.match;
+    if (!match) return;
+    const votedNames  = getVotedNames(match.name);
+    const notVoted    = match.squad.filter(p => !votedNames.includes(p));
+    const offenses    = getVoteOffenses();
+
+    for (const player of notVoted) {
+      const prev   = offenses[player] || 0;
+      const newCnt = prev + 1;
+      offenses[player] = newCnt;
+      const amount = offenseFineAmount(newCnt);
+      await push(ref(db, 'matchFines'), {
+        player,
+        desc:      'Did not vote (voting offense #' + newCnt + ')',
+        amount,
+        matchName: match.name,
+        time:      new Date().toLocaleString()
+      });
+    }
+    setVoteOffenses(offenses);
+    setFinesClosedMatch(match.name);
+    updateCloseVotingBtnState();
+    alert('Fines issued to ' + notVoted.length + ' player(s) who haven\'t voted.');
   };
 
   window.toggleModify = function() {
     const panel = document.getElementById('modify-panel');
-    if (panel.style.display === 'none') {
-      modifySquad = [...state.match.squad];
-      buildModifyGrid();
-      panel.style.display = 'block';
-    } else {
-      panel.style.display = 'none';
-    }
+    if (panel.style.display === 'none') { modifySquad = [...state.match.squad]; buildModifyGrid(); panel.style.display = 'block'; }
+    else { panel.style.display = 'none'; }
   };
 
   function buildModifyGrid() {
@@ -1339,9 +1503,7 @@
     if (removed.length > 0) {
       if (!confirm('Removing ' + removed.join(', ') + ' will also delete their votes. Continue?')) return;
       for (const [key, v] of Object.entries(state.votes)) {
-        if (v.matchName === match.name && removed.includes(v.voter)) {
-          await dbRemove('votes/' + key);
-        }
+        if (v.matchName === match.name && removed.includes(v.voter)) await dbRemove('votes/' + key);
       }
     }
     await dbSet('match', { ...match, squad: [...modifySquad] });
@@ -1369,18 +1531,14 @@
     while (i < sorted.length && posIndex < 3) {
       const [,matchPts] = sorted[i];
       const tied = sorted.filter(([,p]) => p === matchPts);
-      const award = seasonPtsMap[posIndex];
-      tied.forEach(([tname]) => {
-        if (posIndex < 3) result.push({ name: tname, award, icon: icons[posIndex] });
-      });
-      i += tied.length;
-      posIndex += tied.length;
+      tied.forEach(([tname]) => { if (posIndex < 3) result.push({ name: tname, award: seasonPtsMap[posIndex], icon: icons[posIndex] }); });
+      i += tied.length; posIndex += tied.length;
     }
     return result;
   }
 
   window.showResetConfirm = function() {
-    const sorted = getMatchTally();
+    const sorted  = getMatchTally();
     const preview = document.getElementById('reset-podium-preview');
     if (sorted.length === 0) {
       preview.innerHTML = '<p style="color:var(--muted);font-size:13px">No votes yet — nothing to archive.</p>';
@@ -1396,50 +1554,37 @@
 
   window.confirmReset = async function() {
     const btn = document.getElementById('confirm-archive-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loading-spinner"></span>Archiving...';
-
+    btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>Archiving...';
     try {
-      const match    = state.match;
-      const sorted   = getMatchTally();
-      const awardRows= buildSeasonAwardRows(sorted);
-      const finesArr = Object.values(state.matchFines);
-
-      // Update season points
+      const match     = state.match;
+      const sorted    = getMatchTally();
+      const awardRows = buildSeasonAwardRows(sorted);
+      const finesArr  = Object.values(state.matchFines);
       const newSeasonPts = { ...state.seasonPts };
       awardRows.forEach(r => { newSeasonPts[r.name] = (newSeasonPts[r.name] || 0) + r.award; });
       await dbSet('seasonPts', newSeasonPts);
-
-      // Roll match fines into season fines
       const newSeasonFines = { ...state.seasonFines };
       finesArr.forEach(f => { newSeasonFines[f.player] = (newSeasonFines[f.player] || 0) + Number(f.amount); });
       await dbSet('seasonFines', newSeasonFines);
-
-      // Archive
-      const archiveEntry = {
-        matchName:     match.name,
-        date:          new Date().toLocaleString(),
-        top3:          sorted.slice(0,3).map(([name,pts]) => ({ name, pts })),
-        seasonAwarded: awardRows,
-        fines:         finesArr
-      };
-      await push(ref(db, 'archive'), archiveEntry);
-
-      // Clear match data
-      await dbRemove('match');
-      await dbRemove('votes');
-      await dbRemove('matchFines');
-
+      await push(ref(db, 'archive'), { matchName: match.name, date: new Date().toLocaleString(), top3: sorted.slice(0,3).map(([name,pts]) => ({ name, pts })), seasonAwarded: awardRows, fines: finesArr });
+      await dbRemove('match'); await dbRemove('votes'); await dbRemove('matchFines');
+      setFinesClosedMatch(null);
+      // Also reset availability for the new cycle
+      setAvailability({});
+      setNextGame(null);
+      setAvailFinesDone(false);
+      // Clear availability form fields if they exist
+      ['admin-game-date','admin-game-location','admin-game-maps'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
       selectedSquad = [];
       document.getElementById('admin-match-name').value = '';
       hideResetConfirm();
       buildSquadGrid();
     } catch (err) {
-      alert('Error archiving. Check your connection.');
-      console.error(err);
+      alert('Error archiving. Check your connection.'); console.error(err);
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Confirm Archive';
+      btn.disabled = false; btn.textContent = 'Confirm Archive';
     }
   };
 
@@ -1452,34 +1597,30 @@
       if (newSeasonPts[r.name] <= 0) delete newSeasonPts[r.name];
     });
     await dbSet('seasonPts', newSeasonPts);
-
-    // Remove from archive — need to find key
     const snap = await get(ref(db, 'archive'));
     if (snap.exists()) {
       const archiveObj = snap.val();
       const keys = Object.keys(archiveObj);
-      // Match by matchName + date
-      const keyToDelete = keys.find(k =>
-        archiveObj[k].matchName === entry.matchName && archiveObj[k].date === entry.date
-      );
+      const keyToDelete = keys.find(k => archiveObj[k].matchName === entry.matchName && archiveObj[k].date === entry.date);
       if (keyToDelete) await dbRemove('archive/' + keyToDelete);
     }
   };
 
   window.clearSeasonData = async function() {
-    if (!confirm('Clear ALL season data? This wipes the leaderboard, archive, and season fines. Cannot be undone.')) return;
+    if (!confirm('Clear ALL season data? This wipes the leaderboard, archive, season fines, and all offense counters. Cannot be undone.')) return;
     await dbRemove('seasonPts');
     await dbRemove('archive');
     await dbRemove('seasonFines');
+    setVoteOffenses({});
+    setAvailOffenses({});
+    setAvailFinesDone(false);
   };
 
   window.resetPlayerVote = async function(player) {
     if (!confirm('Reset ' + player + '\'s vote? They will be able to vote again.')) return;
     const match = state.match;
     for (const [key, v] of Object.entries(state.votes)) {
-      if (v.voter === player && v.matchName === match.name) {
-        await dbRemove('votes/' + key);
-      }
+      if (v.voter === player && v.matchName === match.name) await dbRemove('votes/' + key);
     }
   };
 
@@ -1487,41 +1628,40 @@
     const match = state.match;
     const votes = Object.values(state.votes);
 
-    const statusBar       = document.getElementById('match-status-bar');
-    const setupForm       = document.getElementById('setup-form');
-    const activeControls  = document.getElementById('active-controls');
-    const closedControls  = document.getElementById('closed-controls');
-    const attendanceSection = document.getElementById('attendance-section');
+    const statusBar        = document.getElementById('match-status-bar');
+    const setupForm        = document.getElementById('setup-form');
+    const activeControls   = document.getElementById('active-controls');
+    const closedControls   = document.getElementById('closed-controls');
+    const attendanceSection= document.getElementById('attendance-section');
 
     if (match && match.open) {
       statusBar.innerHTML = '<div class="match-status active">🟢 Voting Open · ' + match.name + '</div>';
-      setupForm.style.display     = 'none';
-      activeControls.style.display= 'block';
-      closedControls.style.display= 'none';
+      setupForm.style.display      = 'none';
+      activeControls.style.display = 'block';
+      closedControls.style.display = 'none';
       attendanceSection.style.display = 'block';
+      updateCloseVotingBtnState();
     } else if (match && !match.open) {
       statusBar.innerHTML = '<div class="match-status closed">🛑 Voting Closed · ' + match.name + '</div>';
-      setupForm.style.display     = 'none';
-      activeControls.style.display= 'none';
-      closedControls.style.display= 'block';
+      setupForm.style.display      = 'none';
+      activeControls.style.display = 'none';
+      closedControls.style.display = 'block';
       attendanceSection.style.display = 'block';
     } else {
       statusBar.innerHTML = '<div class="match-status inactive">⚪ No active match · Set up below</div>';
-      setupForm.style.display     = 'block';
-      activeControls.style.display= 'none';
-      closedControls.style.display= 'none';
+      setupForm.style.display      = 'block';
+      activeControls.style.display = 'none';
+      closedControls.style.display = 'none';
       attendanceSection.style.display = 'none';
       buildSquadGrid();
     }
 
-    // Attendance
     if (match) {
       const votedNames = votes.filter(v => v.matchName === match.name).map(v => v.voter);
-      const voted    = match.squad.filter(p => votedNames.includes(p));
+      const voted    = match.squad.filter(p =>  votedNames.includes(p));
       const notVoted = match.squad.filter(p => !votedNames.includes(p));
       document.getElementById('stat-voted').textContent     = voted.length;
       document.getElementById('stat-remaining').textContent = notVoted.length;
-
       document.getElementById('attendance-list').innerHTML = match.squad.map(p => {
         const done = votedNames.includes(p);
         return done
@@ -1533,7 +1673,6 @@
       }).join('');
     }
 
-    // Match leaderboard
     const sorted = getMatchTally();
     const rankClasses = ['rank-1','rank-2','rank-3'];
     document.getElementById('podium').innerHTML = sorted.length === 0
@@ -1548,16 +1687,10 @@
     document.getElementById('full-standings').innerHTML = sorted.length === 0
       ? '<div class="no-votes">No votes recorded yet.</div>'
       : '<table class="full-table"><thead><tr><th>#</th><th>Player</th><th>Points</th></tr></thead><tbody>' +
-        sorted.map(([name,pts],i) => '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td>' + pts + '</td></tr>').join('') +
-        '</tbody></table>';
+        sorted.map(([name,pts],i) => '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td>' + pts + '</td></tr>').join('') + '</tbody></table>';
 
-    // Season leaderboard
     renderSeasonStandings('season-standings-admin');
 
-    // Season fines
-    renderSeasonFinesStandings('season-fines-admin');
-
-    // Archive log
     const archiveEl = document.getElementById('archive-log');
     archiveEl.innerHTML = state.archive.length === 0
       ? '<div class="no-votes">No matches archived yet.</div>'
@@ -1567,13 +1700,10 @@
           '<div><div class="archive-match">' + a.matchName + '</div><div class="archive-date">' + a.date + '</div></div>' +
           '<button class="reset-vote-btn" onclick="deleteArchiveEntry(' + idx + ')" title="Delete match">🗑</button></div>' +
           '<div class="archive-picks" style="margin-top:8px">' +
-          (a.seasonAwarded || []).map((r,i) =>
-            '<span class="archive-pick s' + (i+1) + '">' + r.icon + ' ' + r.name + ' +' + r.award + 'pts</span>'
-          ).join('') +
+          (a.seasonAwarded || []).map((r,i) => '<span class="archive-pick s' + (i+1) + '">' + r.icon + ' ' + r.name + ' +' + r.award + 'pts</span>').join('') +
           '</div></div>'
         ).join('');
 
-    // Vote log
     document.getElementById('vote-log').innerHTML = votes.length === 0
       ? '<div class="no-votes">No votes recorded yet.</div>'
       : [...votes].reverse().map(v =>
@@ -1583,15 +1713,18 @@
           '<span class="log-pick p2">🥈 ' + v.picks[2] + '</span>' +
           '<span class="log-pick p3">🥉 ' + v.picks[3] + '</span></div></div>'
         ).join('');
+
+    // Also refresh fines + availability sub if they're active
+    const activeSub = document.querySelector('.admin-subsection.active');
+    if (activeSub && activeSub.id === 'admin-sub-fines')        renderFinesAdmin();
+    if (activeSub && activeSub.id === 'admin-sub-availability') renderAdminAvailability();
   }
 
   function renderSeasonStandings(elId) {
     const pts    = state.seasonPts;
     const el     = document.getElementById(elId);
     const sorted = Object.entries(pts).filter(([,p]) => p > 0).sort((a,b) => b[1]-a[1]);
-    if (sorted.length === 0) {
-      el.innerHTML = '<div class="no-votes">No season points yet!</div>'; return;
-    }
+    if (sorted.length === 0) { el.innerHTML = '<div class="no-votes">No season points yet!</div>'; return; }
     let rows = '', displayRank = 1;
     sorted.forEach(([name, p], i) => {
       if (i > 0 && p < sorted[i-1][1]) displayRank = i + 1;
@@ -1603,31 +1736,184 @@
   function renderSeasonFinesStandings(elId) {
     const sf     = state.seasonFines;
     const el     = document.getElementById(elId);
-    const sorted = Object.entries(sf).filter(([,v]) => v > 0).sort((a,b) => b[1]-a[1]);
     if (!el) return;
-    el.innerHTML = sorted.length === 0
-      ? '<div class="no-votes">No season fines yet!</div>'
-      : '<table class="full-table"><thead><tr><th>#</th><th>Player</th><th>Total Fines</th></tr></thead><tbody>' +
-        sorted.map(([name, amt], i) =>
-          '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td style="color:var(--red)">$' + amt + '</td></tr>'
-        ).join('') + '</tbody></table>';
+    const sorted = Object.entries(sf).filter(([,v]) => v > 0).sort((a,b) => b[1]-a[1]);
+    if (sorted.length === 0) {
+      el.innerHTML = '<div class="no-votes">No fines yet</div>';
+      return;
+    }
+    const total = sorted.reduce((s, [,v]) => s + v, 0);
+    el.innerHTML =
+      '<div class="fines-total-bar" style="margin-top:0;margin-bottom:16px">' +
+        '<span class="fines-total-label">Season Total</span>' +
+        '<span class="fines-total-amount">$' + total + '</span>' +
+      '</div>' +
+      '<table class="full-table"><thead><tr><th>#</th><th>Player</th><th>Total Fines</th></tr></thead><tbody>' +
+      sorted.map(([name, amt], i) => '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td style="color:var(--red)">$' + amt + '</td></tr>').join('') +
+      '</tbody></table>';
   }
 
   // ============================================================
-  // FINES PAGE
+  // AVAILABILITY ADMIN (Subsection 2)
   // ============================================================
-  window.checkFinesPin = function() {
-    if (document.getElementById('fines-pin-input').value === FINES_PIN) {
-      document.getElementById('fines-gate').style.display = 'none';
-      document.getElementById('fines-content').classList.add('visible');
-      renderFinesPage();
-    } else {
-      document.getElementById('fines-pin-error').textContent = 'Incorrect PIN. Try again.';
-    }
+  // Format YYYY-MM-DD → "Saturday – 26/04/26"
+  function formatGameDate(isoDate) {
+    if (!isoDate) return '';
+    const [y, m, d] = isoDate.split('-');
+    const dateObj = new Date(Number(y), Number(m) - 1, Number(d));
+    const dayName = dateObj.toLocaleDateString('en-AU', { weekday: 'long' });
+    const yy = String(y).slice(2);
+    return dayName + ' – ' + d + '/' + m + '/' + yy;
+  }
+
+  // Format HH:MM (24h) → "8:00 AM"
+  function formatGameTime(t24) {
+    if (!t24) return '';
+    const [hStr, mStr] = t24.split(':');
+    let h = parseInt(hStr, 10);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return h + ':' + mStr + ' ' + ampm;
+  }
+
+  window.publishGameDetails = function() {
+    const dateRaw  = document.getElementById('admin-game-date').value;
+    const timeRaw  = document.getElementById('admin-game-time').value;
+    const location = document.getElementById('admin-game-location').value.trim();
+    const maps     = document.getElementById('admin-game-maps').value.trim();
+    if (!dateRaw && !timeRaw && !location) { alert('Please fill in at least one match detail.'); return; }
+    setNextGame({
+      dateRaw,
+      timeRaw,
+      date:     formatGameDate(dateRaw),
+      time:     formatGameTime(timeRaw),
+      location,
+      maps
+    });
+    const confirmEl = document.getElementById('game-publish-confirm');
+    confirmEl.style.display = 'block';
+    setTimeout(() => { confirmEl.style.display = 'none'; }, 3000);
+    const btn = document.getElementById('publish-match-btn');
+    if (btn) { btn.innerHTML = '✏️ Edit Match Details'; }
   };
 
-  function renderFinesPage() {
-    const match   = state.match;
+  window.showCloseAvailConfirm  = () => { document.getElementById('close-avail-confirm-box').style.display = 'block'; };
+  window.hideCloseAvailConfirm  = () => { document.getElementById('close-avail-confirm-box').style.display = 'none'; };
+  window.showResetAvailConfirm  = () => { document.getElementById('reset-avail-confirm-box').style.display = 'block'; };
+  window.hideResetAvailConfirm  = () => { document.getElementById('reset-avail-confirm-box').style.display = 'none'; };
+
+  // Track whether avail fines have been issued (keyed by a stable token — we use a fixed key
+  // since availability isn't tied to a named match the way voting is)
+  function getAvailFinesDone()  { return lsGet('fp_avail_fines_done') || false; }
+  function setAvailFinesDone(v) { lsSet('fp_avail_fines_done', v); }
+
+  function updateCloseAvailBtnState() {
+    const btn = document.getElementById('close-avail-btn');
+    if (!btn) return;
+    const done = getAvailFinesDone();
+    btn.disabled = done;
+    btn.title    = done ? 'Availability fines already issued for this match' : '';
+  }
+
+  window.closeAvailability = async function() {
+    hideCloseAvailConfirm();
+    const players  = getAllPlayers();
+    const avail    = getAvailability();
+    const offenses = getAvailOffenses();
+    const notResponded = players.filter(p => !avail[p]);
+
+    for (const player of notResponded) {
+      const prev   = offenses[player] || 0;
+      const newCnt = prev + 1;
+      offenses[player] = newCnt;
+      const amount = offenseFineAmount(newCnt);
+      const match  = state.match;
+      await push(ref(db, 'matchFines'), {
+        player,
+        desc:      'Did not submit availability (availability offense #' + newCnt + ')',
+        amount,
+        matchName: match ? match.name : 'No active match',
+        time:      new Date().toLocaleString()
+      });
+    }
+    setAvailOffenses(offenses);
+    setAvailFinesDone(true);
+    updateCloseAvailBtnState();
+    alert('Fines issued to ' + notResponded.length + ' player(s) who haven\'t responded.');
+    renderAdminAvailability();
+  };
+
+  window.resetAvailability = function() {
+    hideResetAvailConfirm();
+    setAvailability({});
+    setNextGame(null);
+    setAvailFinesDone(false);
+    // Clear admin form fields
+    document.getElementById('admin-game-date').value     = '';
+    document.getElementById('admin-game-location').value = '';
+    document.getElementById('admin-game-maps').value     = '';
+    renderAdminAvailability();
+    alert('Availability and match details have been reset.');
+  };
+
+  function buildTimeSelect(savedRaw) {
+    const sel = document.getElementById('admin-game-time');
+    if (!sel) return;
+    sel.innerHTML = '';
+    const defaultVal = savedRaw || '13:00';
+    for (let h = 6; h <= 22; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        const hh  = String(h).padStart(2, '0');
+        const mm  = String(m).padStart(2, '0');
+        const val = hh + ':' + mm;
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = formatGameTime(val);
+        if (val === defaultVal) opt.selected = true;
+        sel.appendChild(opt);
+      }
+    }
+  }
+
+  function renderAdminAvailability() {
+    const avail   = getAvailability();
+    const players = getAllPlayers();
+    const game    = getNextGame();
+
+    // Build time select (always rebuild so options exist)
+    buildTimeSelect(game && game.timeRaw ? game.timeRaw : '13:00');
+
+    // Populate match detail fields if published
+    if (game) {
+      if (game.dateRaw)  document.getElementById('admin-game-date').value     = game.dateRaw;
+      if (game.location) document.getElementById('admin-game-location').value = game.location;
+      if (game.maps)     document.getElementById('admin-game-maps').value     = game.maps;
+    }
+
+    // Restore publish button label
+    const btn = document.getElementById('publish-match-btn');
+    if (btn) btn.innerHTML = game ? '✏️ Edit Match Details' : '📢 Publish Match Details';
+
+    updateCloseAvailBtnState();
+
+    const statusLabel = { available: '✅ Available', injured: '🤕 Injured', away: '✈️ Away', pending: '⚠️ Pend. Injury' };
+    const statusColor = { available: 'var(--green)', injured: 'var(--red)', away: 'var(--blue)', pending: 'var(--orange)' };
+
+    const wrap = document.getElementById('admin-avail-table-wrap');
+    wrap.innerHTML = '<table class="full-table"><thead><tr><th>Player</th><th style="text-align:right">Status</th></tr></thead><tbody>' +
+      players.map(p => {
+        const s = avail[p];
+        const label = s ? statusLabel[s] : '❓ No Response';
+        const color = s ? statusColor[s] : 'var(--muted)';
+        return '<tr><td>' + escHtml(p) + '</td><td style="text-align:right;color:' + color + ';font-size:13px">' + label + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+
+  // ============================================================
+  // FINES ADMIN (Subsection 3)
+  // ============================================================
+  function renderFinesAdmin() {
+    const match    = state.match;
     const statusBar = document.getElementById('fines-match-status-bar');
     const addForm   = document.getElementById('fines-add-form');
 
@@ -1643,40 +1929,33 @@
     }
 
     const sel = document.getElementById('fine-player-select');
+    const curVal = sel.value;
     sel.innerHTML = '<option value="">Select player...</option>';
     getAllPlayers().forEach(p => {
       const opt = document.createElement('option');
-      opt.value = p; opt.textContent = p;
-      sel.appendChild(opt);
+      opt.value = p; opt.textContent = p; sel.appendChild(opt);
     });
+    if (curVal) sel.value = curVal;
 
     renderFinesList();
-    renderSeasonFinesStandings('season-fines-standings');
+    renderSeasonFinesStandings('season-fines-admin');
   }
 
   window.addFine = async function() {
     const player = document.getElementById('fine-player-select').value;
     const desc   = document.getElementById('fine-desc-input').value.trim();
     const amount = document.getElementById('fine-amount-input').value.trim();
-
     if (!player) { alert('Please select a player.'); return; }
     if (!desc)   { alert('Please enter what they did.'); return; }
     if (!amount || isNaN(amount) || Number(amount) <= 0) { alert('Please enter a valid dollar amount.'); return; }
-
     const match = state.match;
     try {
-      await push(ref(db, 'matchFines'), {
-        player, desc,
-        amount: Number(amount),
-        matchName: match ? match.name : 'No match',
-        time: new Date().toLocaleString()
-      });
+      await push(ref(db, 'matchFines'), { player, desc, amount: Number(amount), matchName: match ? match.name : 'No match', time: new Date().toLocaleString() });
       document.getElementById('fine-player-select').value = '';
       document.getElementById('fine-desc-input').value    = '';
       document.getElementById('fine-amount-input').value  = '';
     } catch (err) {
-      alert('Error saving fine. Check your connection.');
-      console.error(err);
+      alert('Error saving fine. Check your connection.'); console.error(err);
     }
   };
 
@@ -1685,36 +1964,46 @@
     await dbRemove('matchFines/' + key);
   };
 
+  window.showDeleteAllFinesConfirm = () => { document.getElementById('delete-all-fines-confirm-box').style.display = 'block'; };
+  window.hideDeleteAllFinesConfirm = () => { document.getElementById('delete-all-fines-confirm-box').style.display = 'none'; };
+
+  window.deleteAllFines = async function() {
+    hideDeleteAllFinesConfirm();
+    await dbRemove('matchFines');
+  };
+
   function renderFinesList() {
     const finesObj = state.matchFines;
     const listEl   = document.getElementById('fines-list-admin');
     const totalEl  = document.getElementById('fines-total-admin');
     if (!listEl) return;
-
     const entries = Object.entries(finesObj);
     if (entries.length === 0) {
-      listEl.innerHTML = '<div class="no-votes">No fines yet — everyone behaved! 🙂</div>';
-      totalEl.innerHTML = '';
-      return;
+      listEl.innerHTML = '<div class="no-votes">No fines yet</div>';
+      totalEl.innerHTML = ''; return;
     }
-
     listEl.innerHTML = entries.map(([key, f]) =>
       '<div class="fine-item">' +
-        '<div class="fine-item-left"><div class="fine-player">' + f.player + '</div><div class="fine-desc">' + f.desc + '</div></div>' +
+        '<div class="fine-item-left"><div class="fine-player">' + escHtml(f.player) + '</div><div class="fine-desc">' + escHtml(f.desc) + '</div></div>' +
         '<div style="display:flex;align-items:center;gap:10px">' +
           '<div class="fine-amount">$' + f.amount + '</div>' +
           '<button class="delete-fine-btn" onclick="deleteFine(\'' + key + '\')" title="Delete fine">✕</button>' +
         '</div>' +
       '</div>'
     ).join('');
-
     const total = entries.reduce((s, [,f]) => s + Number(f.amount), 0);
     totalEl.innerHTML = '<div class="fines-total-bar"><span class="fines-total-label">Total This Match</span><span class="fines-total-amount">$' + total + '</span></div>';
   }
 
-  // Keyboard Enter for PIN fields
+  // ============================================================
+  // UTILITIES
+  // ============================================================
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Keyboard Enter for PIN
   document.getElementById('pin-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkPin(); });
-  document.getElementById('fines-pin-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.checkFinesPin(); });
 
 </script>
 </body>
