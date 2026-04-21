@@ -1085,7 +1085,7 @@
   }
 
   // ============================================================
-  // localStorage helpers for new keys
+  // localStorage helpers (offense counters stay device-local)
   // ============================================================
   function lsGet(key) {
     try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; }
@@ -1094,21 +1094,23 @@
     try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
   }
 
-  // Keys:
-  // fp_availability   – { playerName: 'available'|'injured'|'away'|'pending' }
-  // fp_next_game      – { date, time, location, maps }
+  // Keys still in localStorage (admin-device-only data):
   // fp_vote_offenses  – { playerName: count }
   // fp_avail_offenses – { playerName: count }
+  // fp_fines_closed_match – match name string
+  // fp_avail_fines_done   – boolean
 
-  function getAvailability()    { return lsGet('fp_availability')   || {}; }
-  function getNextGame()        { return lsGet('fp_next_game')      || null; }
+  // availability and nextGame are now in Firebase (real-time, cross-device)
   function getVoteOffenses()    { return lsGet('fp_vote_offenses')  || {}; }
   function getAvailOffenses()   { return lsGet('fp_avail_offenses') || {}; }
-
-  function setAvailability(v)   { lsSet('fp_availability',   v); }
-  function setNextGame(v)       { lsSet('fp_next_game',      v); }
   function setVoteOffenses(v)   { lsSet('fp_vote_offenses',  v); }
   function setAvailOffenses(v)  { lsSet('fp_avail_offenses', v); }
+
+  // nextGame and availability are now Firebase-backed
+  function getAvailability()    { return state.availability  || {}; }
+  function getNextGame()        { return state.nextGame      || null; }
+  async function setAvailability(v)  { await dbSet('availability', Object.keys(v).length ? v : null); }
+  async function setNextGame(v)      { await dbSet('nextGame', v); }
 
   // Flat $10 fine per offense (count still tracked for history)
   function offenseFineAmount() { return 10; }
@@ -1117,13 +1119,15 @@
   // App State
   // ============================================================
   let state = {
-    match:       null,
-    votes:       {},
-    roster:      null,
-    seasonPts:   {},
-    archive:     [],
-    matchFines:  {},
-    seasonFines: {}
+    match:        null,
+    votes:        {},
+    roster:       null,
+    seasonPts:    {},
+    archive:      [],
+    matchFines:   {},
+    seasonFines:  {},
+    availability: {},
+    nextGame:     null
   };
 
   const DEFAULT_PLAYERS = [
@@ -1143,13 +1147,15 @@
   function getAllPlayers() { return state.roster || [...DEFAULT_PLAYERS]; }
 
   // ---- Real-time listeners ----
-  dbListen('match',       v => { state.match       = v;                    onDataChange(); });
-  dbListen('votes',       v => { state.votes       = v || {};              onDataChange(); });
-  dbListen('roster',      v => { state.roster      = v;                    onDataChange(); });
-  dbListen('seasonPts',   v => { state.seasonPts   = v || {};              onDataChange(); });
-  dbListen('archive',     v => { state.archive     = v ? Object.values(v).reverse() : []; onDataChange(); });
-  dbListen('matchFines',  v => { state.matchFines  = v || {};              onDataChange(); });
-  dbListen('seasonFines', v => { state.seasonFines = v || {};              onDataChange(); });
+  dbListen('match',        v => { state.match        = v;                    onDataChange(); });
+  dbListen('votes',        v => { state.votes        = v || {};              onDataChange(); });
+  dbListen('roster',       v => { state.roster       = v;                    onDataChange(); });
+  dbListen('seasonPts',    v => { state.seasonPts    = v || {};              onDataChange(); });
+  dbListen('archive',      v => { state.archive      = v ? Object.values(v).reverse() : []; onDataChange(); });
+  dbListen('matchFines',   v => { state.matchFines   = v || {};              onDataChange(); });
+  dbListen('seasonFines',  v => { state.seasonFines  = v || {};              onDataChange(); });
+  dbListen('availability', v => { state.availability = v || {};              onDataChange(); });
+  dbListen('nextGame',     v => { state.nextGame     = v || null;            onDataChange(); });
 
   function onDataChange() {
     const activeTab = document.querySelector('.page.active').id.replace('page-','');
@@ -1422,14 +1428,14 @@
     document.getElementById('avail-success-msg').style.display = 'none';
   };
 
-  window.submitAvailability = function() {
+  window.submitAvailability = async function() {
     const name = document.getElementById('avail-name-select').value;
     if (!name)                 { alert('Please select your name!');   return; }
     if (!selectedAvailStatus)  { alert('Please select your status!'); return; }
 
-    const avail = getAvailability();
+    const avail = { ...getAvailability() };
     avail[name] = selectedAvailStatus;
-    setAvailability(avail);
+    await setAvailability(avail);
 
     document.getElementById('avail-success-msg').style.display = 'block';
     renderAvailabilityTable();
@@ -1666,8 +1672,8 @@
       await dbRemove('match'); await dbRemove('votes'); await dbRemove('matchFines');
       setFinesClosedMatch(null);
       // Also reset availability for the new cycle
-      setAvailability({});
-      setNextGame(null);
+      await setAvailability({});
+      await setNextGame(null);
       setAvailFinesDone(false);
       // Clear availability form fields if they exist
       ['admin-game-date','admin-game-location','admin-game-maps'].forEach(id => {
@@ -1872,13 +1878,13 @@
     return h + ':' + mStr + ' ' + ampm;
   }
 
-  window.publishGameDetails = function() {
+  window.publishGameDetails = async function() {
     const dateRaw  = document.getElementById('admin-game-date').value;
     const timeRaw  = document.getElementById('admin-game-time').value;
     const location = document.getElementById('admin-game-location').value.trim();
     const maps     = document.getElementById('admin-game-maps').value.trim();
     if (!dateRaw && !timeRaw && !location) { alert('Please fill in at least one match detail.'); return; }
-    setNextGame({
+    await setNextGame({
       dateRaw,
       timeRaw,
       date:     formatGameDate(dateRaw),
@@ -1939,10 +1945,10 @@
     renderAdminAvailability();
   };
 
-  window.resetAvailability = function() {
+  window.resetAvailability = async function() {
     hideResetAvailConfirm();
-    setAvailability({});
-    setNextGame(null);
+    await setAvailability({});
+    await setNextGame(null);
     setAvailFinesDone(false);
     // Clear admin form fields
     document.getElementById('admin-game-date').value     = '';
