@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --green:   #00e676;
+    --green:   #00cc6a;
     --dark:    #080d0b;
     --card:    #0f1a12;
     --card2:   #162018;
@@ -21,7 +21,7 @@
     --orange:  #ff9800;
     --blue:    #42a5f5;
     --purple:  #ab6ff0;
-    --win:     #00e676;
+    --win:     #00cc6a;
     --draw:    #ff9800;
     --loss:    #ef5350;
   }
@@ -161,8 +161,8 @@
     border: 1px solid var(--border);
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    padding: 12px 16px;
+    font-size: 13px;
+    padding: 8px 12px;
     border-radius: 10px;
     outline: none;
     margin-bottom: 20px;
@@ -439,20 +439,21 @@
   .modify-panel { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
   .modify-panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 3px; color: var(--orange); margin-bottom: 10px; text-transform: uppercase; }
 
-  .attendance-list { display: flex; flex-direction: column; gap: 6px; }
+  .attendance-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .attendance-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
+    padding: 7px 10px;
     border-radius: 10px;
     border: 1px solid var(--border);
-    font-size: 14px;
+    font-size: 12px;
     background: var(--card2);
+    gap: 4px;
   }
   .attendance-row.voted { border-color: rgba(0,230,118,0.25); background: rgba(0,230,118,0.04); }
-  .att-name { font-weight: 500; }
-  .att-status { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px; }
+  .att-name { font-weight: 500; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .att-status { font-size: 10px; padding: 2px 6px; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px; flex-shrink: 0; }
   .att-status.done    { background: rgba(0,230,118,0.15); color: var(--green); }
   .att-status.pending { background: rgba(90,122,96,0.12); color: var(--muted); }
 
@@ -672,18 +673,22 @@
 
   .avail-status-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
   .avail-status-btn {
-    padding: 14px 10px;
+    padding: 12px 10px;
+    min-height: 60px;
     background: var(--card2);
     border: 1px solid var(--border);
     color: var(--muted);
     font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.15s;
     text-align: center;
     line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .avail-status-btn:hover             { border-color: rgba(0,230,118,0.3); color: var(--text); }
   .avail-status-btn.sel-available     { background: rgba(0,230,118,0.12);  border-color: var(--green);  color: var(--green);  font-weight: 600; }
@@ -692,16 +697,19 @@
   .avail-status-btn.sel-pending       { background: rgba(171,111,240,0.12);border-color: var(--purple); color: var(--purple); font-weight: 600; }
 
   .avail-table-wrap { margin-top: 8px; }
-  .avail-table { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-  .avail-col   { display: flex; flex-direction: column; gap: 4px; }
+  .avail-table { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .avail-col   { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
   .avail-col-header {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    padding: 6px 4px 4px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 5px 2px 4px;
     border-radius: 6px 6px 0 0;
     text-align: center;
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .avail-col-header.col-available  { background: rgba(0,230,118,0.15); color: var(--green); }
   .avail-col-header.col-injured    { background: rgba(239,83,80,0.15);  color: var(--red); }
@@ -913,6 +921,7 @@
   .bench-select:focus { border-color: var(--muted); }
   .bench-select.filled { border-color: rgba(255,152,0,0.5); color: var(--orange); font-weight: 600; }
   .bench-select option { background: #0f1a12; color: var(--text); }
+  .bench-select option[data-taken="true"] { color: var(--muted); }
 
   /* Read-only bench in posted view */
   .bench-readonly-wrap {
@@ -988,9 +997,9 @@
     border: 1px solid var(--border);
     color: var(--muted);
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    padding: 8px 6px;
+    padding: 5px 4px;
     border-radius: 8px;
     outline: none;
     cursor: pointer;
@@ -1004,6 +1013,7 @@
   .builder-row-gk .builder-select        { border-color: rgba(255,214,0,0.2); }
   .builder-row-gk .builder-select.filled { border-color: var(--gold); color: var(--gold); }
   .builder-select option { background: #0f1a12; color: var(--text); }
+  .builder-select option[data-taken="true"] { color: var(--muted); }
 
   /* ── FORMATION BUILDER ── */
   .formation-select-row {
@@ -1521,12 +1531,10 @@
           <button class="action-btn primary" id="publish-match-btn" onclick="publishGameDetails()">📢 Publish Match Details</button>
         </div>
         <div id="game-publish-confirm" style="display:none;margin-top:10px;color:var(--green);font-size:13px">✅ Match details published!</div>
-      </div>
 
-      <div class="admin-section">
-        <div class="admin-section-title">📋 Current Availability</div>
-        <div id="admin-avail-table-wrap"><div class="no-votes">Loading...</div></div>
-        <div style="margin-top:16px">
+        <!-- Availability action buttons — dark sub-block -->
+        <div style="background:#080d0b;border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:20px">
+          <div class="section-title" style="margin-bottom:12px">⚙️ Availability Actions</div>
           <div class="btn-row">
             <button class="action-btn warning" id="close-avail-btn" onclick="showCloseAvailConfirm()">💸 Issue Fines for Availability</button>
           </div>
@@ -1550,6 +1558,11 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="admin-section">
+        <div class="admin-section-title">📋 Current Availability</div>
+        <div id="admin-avail-table-wrap"><div class="no-votes">Loading...</div></div>
       </div>
       <!-- FORMATION BUILDER -->
       <div class="admin-section" id="formation-builder-section">
@@ -3312,6 +3325,7 @@
         // Keep enabled so coach can still pick them — just style as muted to show they're placed
         opt.disabled = false;
         opt.style.color = takenByOther ? 'var(--muted)' : '';
+        opt.setAttribute('data-taken', takenByOther ? 'true' : 'false');
       });
     });
   }
