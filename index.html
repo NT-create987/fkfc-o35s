@@ -2988,11 +2988,16 @@
     const statusColor = { available: 'var(--green)', injured: 'var(--red)', away: 'var(--blue)', pending: 'var(--purple)' };
 
     const wrap = document.getElementById('admin-avail-table-wrap');
-    wrap.innerHTML = '<table class="full-table"><thead><tr><th>Player</th><th style="text-align:right">Status</th></tr></thead><tbody>' +
+    wrap.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">' +
       players.map(p => {
         const s = getAvailForPlayer(p);
-        return '<tr><td>' + escHtml(p) + '</td><td style="text-align:right;color:' + (s ? statusColor[s] : 'var(--muted)') + ';font-size:13px">' + (s ? statusLabel[s] : '❓ No Response') + '</td></tr>';
-      }).join('') + '</tbody></table>';
+        const color = s ? statusColor[s] : 'var(--muted)';
+        const label = s ? statusLabel[s] : '❓ No Response';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 8px">' +
+          '<span style="font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + escHtml(p) + '</span>' +
+          '<span style="font-size:10px;color:' + color + ';font-weight:600;white-space:nowrap;flex-shrink:0">' + label + '</span>' +
+          '</div>';
+      }).join('') + '</div>';
 
     renderAdminFormation();
   }
