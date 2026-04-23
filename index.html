@@ -506,10 +506,13 @@
 
   .full-table { width: 100%; border-collapse: collapse; }
   .full-table th { text-align: left; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
-  .full-table td { padding: 10px 12px; font-size: 14px; border-bottom: 1px solid rgba(26,43,30,0.6); }
+  .full-table th:nth-child(n+3) { text-align: right; }
+  .full-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid rgba(26,43,30,0.6); }
   .full-table tr:last-child td { border-bottom: none; }
-  .full-table td:last-child { text-align: right; font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--green); }
+  .full-table td:nth-child(n+3) { text-align: right; font-family: 'Bebas Neue', sans-serif; font-size: 17px; color: var(--text); }
+  .full-table td:last-child { color: var(--green); }
   .season-table td:last-child { color: var(--gold); }
+  .season-table th:nth-child(n+3) { text-align: right; }
 
   .votes-log { margin-top: 8px; }
   .log-item  { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; font-size: 13px; }
@@ -1492,9 +1495,6 @@
 
       <div class="admin-section">
         <div class="admin-section-title">🏆 Match Leaderboard</div>
-        <div class="section-title">Top 3 This Match</div>
-        <div class="podium" id="podium"></div>
-        <div class="section-title">Full Standings</div>
         <div id="full-standings"></div>
       </div>
 
@@ -1502,10 +1502,6 @@
         <div class="admin-section-title">🏅 Season Leaderboard</div>
         <div class="section-title">Cumulative season points</div>
         <div id="season-standings-admin"></div>
-        <div style="margin-top:20px">
-          <div class="section-title">Match Archive</div>
-          <div id="archive-log"></div>
-        </div>
         <div style="margin-top:16px">
           <button class="action-btn danger" style="font-size:13px;padding:8px 14px;letter-spacing:1px;flex:none;" onclick="clearSeasonData()">🗑 Clear Season Data</button>
         </div>
@@ -1562,10 +1558,6 @@
         </div>
       </div>
 
-      <div class="admin-section">
-        <div class="admin-section-title">📋 Current Availability</div>
-        <div id="admin-avail-table-wrap"><div class="no-votes">Loading...</div></div>
-      </div>
       <!-- FORMATION BUILDER -->
       <div class="admin-section" id="formation-builder-section">
         <div class="admin-section-title">🗒️ Formation Builder</div>
@@ -1662,14 +1654,14 @@
       <div class="admin-section">
         <div class="admin-section-title">✏️ Edit Match Results</div>
         <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">
-          Edit the score, result, and goalscorers for any archived match. Stats are automatically recalculated.
+          Edit the score, goalscorers, and POTM votes for any archived match. Stats and season points are automatically recalculated.
         </p>
         <div id="admin-results-list">
           <div class="no-votes">No archived matches yet.</div>
         </div>
       </div>
 
-      <!-- Inline edit panel — hidden until Edit is pressed -->
+      <!-- Inline score edit panel -->
       <div class="admin-section" id="edit-result-panel" style="display:none">
         <div class="admin-section-title" id="edit-result-title">✏️ Editing Match</div>
 
@@ -1692,8 +1684,22 @@
           <button class="action-btn primary" onclick="saveEditedResult()">💾 Save Changes</button>
           <button class="action-btn secondary" onclick="cancelEditResult()">Cancel</button>
         </div>
-
         <div id="edit-save-confirm" style="display:none;margin-top:10px;color:var(--green);font-size:13px;text-align:center">✅ Result updated!</div>
+      </div>
+
+      <!-- Inline vote edit panel -->
+      <div class="admin-section" id="edit-votes-panel" style="display:none">
+        <div class="admin-section-title" id="edit-votes-title">🏆 Edit POTM Votes</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">Edit the points and players. Season leaderboard is automatically recalculated.</p>
+        <div id="edit-votes-rows"></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="action-btn secondary" style="font-size:12px;padding:7px 12px;flex:none;min-width:auto" onclick="addVoteRow()">+ Add Row</button>
+        </div>
+        <div class="btn-row" style="margin-top:16px">
+          <button class="action-btn primary" onclick="saveEditedVotes()">💾 Save Votes</button>
+          <button class="action-btn secondary" onclick="cancelEditVotes()">Cancel</button>
+        </div>
+        <div id="edit-votes-confirm" style="display:none;margin-top:10px;color:var(--green);font-size:13px;text-align:center">✅ Votes updated!</div>
       </div>
     </div><!-- /admin-sub-results -->
 
@@ -1728,6 +1734,7 @@
     'selectFormation','clearFormationBuilder','onPosSelectChange','onBenchSelectChange','postLineup','editPostedLineup','unpostLineup',
     'addFine','deleteFine','showDeleteAllFinesConfirm','hideDeleteAllFinesConfirm','deleteAllFines',
     'openEditResult','cancelEditResult','onEditScoreChange','saveEditedResult','deleteArchivedResult',
+    'openEditVotes','cancelEditVotes','saveEditedVotes','addVoteRow',
     'checkPin'
   ];
   _delegated.forEach(function(fn) {
@@ -1933,6 +1940,9 @@
     if (activeTab === 'results')      renderResultsPage();
     if (activeTab === 'admin' && document.getElementById('admin-content').classList.contains('visible')) {
       renderAdmin();
+    } else {
+      // Always keep season standings fresh even if admin tab isn't active
+      renderSeasonStandings('season-standings-admin');
     }
   }
 
@@ -1992,16 +2002,17 @@
   }
 
   function renderClosedLeaderboard() {
-    const sorted = getMatchTally();
+    const sorted   = getMatchTally();
+    const awardRows = buildSeasonAwardRows(sorted);
     const rankClasses = ['rank-1','rank-2','rank-3'];
-    const matchPts    = [3, 2, 1];
+
     document.getElementById('closed-podium').innerHTML = sorted.length === 0
       ? '<div class="no-votes">No votes were recorded.</div>'
-      : sorted.slice(0,3).map(([name],i) =>
-          '<div class="podium-row ' + rankClasses[i] + '">' +
+      : awardRows.map((r, i) =>
+          '<div class="podium-row ' + rankClasses[Math.min(i, 2)] + '">' +
           '<div class="rank-badge">' + (i+1) + '</div>' +
-          '<div class="rank-name">' + name + '</div>' +
-          '<div><div class="rank-pts">' + matchPts[i] + '</div><div class="rank-pts-label">pts</div></div></div>'
+          '<div class="rank-name">' + escHtml(r.name) + '</div>' +
+          '<div><div class="rank-pts">' + r.award + '</div><div class="rank-pts-label">season pts</div></div></div>'
         ).join('');
 
     // Scoreline
@@ -2675,6 +2686,9 @@
       document.getElementById('admin-match-date').value     = '';
       hideResetConfirm();
       buildSquadGrid();
+      // Explicitly re-render season standings now that all writes are complete
+      state.seasonPts = newSeasonPts;
+      renderSeasonStandings('season-standings-admin');
     } catch (err) {
       alert('Error archiving. Check your connection.'); console.error(err);
     } finally {
@@ -2795,20 +2809,16 @@
     }
 
     const sorted = getMatchTally();
-    const rankClasses = ['rank-1','rank-2','rank-3'];
-    document.getElementById('podium').innerHTML = sorted.length === 0
-      ? '<div class="no-votes">No votes yet.</div>'
-      : sorted.slice(0,3).map(([name,pts],i) =>
-          '<div class="podium-row ' + rankClasses[i] + '">' +
-          '<div class="rank-badge">' + (i+1) + '</div>' +
-          '<div class="rank-name">' + name + '</div>' +
-          '<div><div class="rank-pts">' + pts + '</div><div class="rank-pts-label">pts</div></div></div>'
-        ).join('');
+    const awardRows = buildSeasonAwardRows(sorted);
 
     document.getElementById('full-standings').innerHTML = sorted.length === 0
       ? '<div class="no-votes">No votes recorded yet.</div>'
-      : '<table class="full-table"><thead><tr><th>#</th><th>Player</th><th>Points</th></tr></thead><tbody>' +
-        sorted.map(([name,pts],i) => '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td>' + pts + '</td></tr>').join('') + '</tbody></table>';
+      : '<table class="full-table"><thead><tr><th>#</th><th>Player</th><th>Vote Pts</th><th>Season Pts</th></tr></thead><tbody>' +
+        sorted.map(([name, votePts], i) => {
+          const award = awardRows.find(r => r.name === name);
+          const matchPts = award ? '<span style="color:var(--green)">' + award.award + '</span>' : '<span style="color:var(--muted)">—</span>';
+          return '<tr><td>' + (i+1) + '</td><td>' + escHtml(name) + '</td><td>' + votePts + '</td><td>' + matchPts + '</td></tr>';
+        }).join('') + '</tbody></table>';
 
     renderSeasonStandings('season-standings-admin');
 
@@ -3602,9 +3612,9 @@
       return;
     }
     listEl.innerHTML = state.archive.map((a, idx) => {
-      const rc     = a.result || null;
-      const fkfc   = a.fkfc !== undefined ? a.fkfc : null;
-      const opp    = a.opp  !== undefined ? a.opp  : null;
+      const rc       = a.result || null;
+      const fkfc     = a.fkfc !== undefined ? a.fkfc : null;
+      const opp      = a.opp  !== undefined ? a.opp  : null;
       const oppName  = a.opponent     || a.matchName || '';
       const dispDate = a.formattedDate || a.date      || '';
       const hasResult = rc !== null && fkfc !== null;
@@ -3612,7 +3622,7 @@
         ? '<span style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;color:var(--text);letter-spacing:2px">' + fkfc + ' – ' + opp + '</span> <span class="result-badge ' + rc + '" style="font-size:10px;padding:2px 8px;vertical-align:middle">' + rc.toUpperCase() + '</span>'
         : '<span style="color:var(--muted);font-size:13px">No result recorded</span>';
 
-      const goals  = a.goals || [];
+      const goals = a.goals || [];
       const goalsHtml = goals.length > 0
         ? '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">' +
           goals.map(g => {
@@ -3625,6 +3635,19 @@
           }).join('') + '</div>'
         : '';
 
+      // POTM — support both old top3[] (name strings) and new [{player,pts}] format
+      const awarded = a.seasonAwarded || [];
+      const potmHtml = awarded.length > 0
+        ? '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">' +
+          awarded.map(r => {
+            const icons = ['🥇','🥈','🥉','🏅'];
+            const icon  = r.icon || icons[Math.min(awarded.indexOf(r), 3)];
+            return '<div class="goal-chip" style="border-color:rgba(255,214,0,0.2)">' +
+              '<span>' + icon + '</span><span style="color:var(--gold)">' + escHtml(r.name) + '</span>' +
+              '<span style="color:var(--muted);font-size:10px">+' + r.award + 'pts</span></div>';
+          }).join('') + '</div>'
+        : '<div style="margin-top:6px;font-size:11px;color:var(--muted);font-style:italic">No POTM votes recorded</div>';
+
       return '<div class="result-card ' + (rc || '') + '" style="margin-bottom:10px">' +
         '<div class="result-card-header">' +
           '<div>' +
@@ -3634,8 +3657,13 @@
           '<div>' + scoreLine + '</div>' +
         '</div>' +
         goalsHtml +
-        '<div style="margin-top:12px;display:flex;gap:8px">' +
-          '<button class="action-btn secondary" style="font-size:12px;padding:8px 14px;letter-spacing:1px;flex:none;min-width:auto" onclick="openEditResult(' + idx + ')">✏️ Edit</button>' +
+        '<div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px">' +
+          '<div style="font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:4px;font-family:\'Bebas Neue\',sans-serif">POTM</div>' +
+          potmHtml +
+        '</div>' +
+        '<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">' +
+          '<button class="action-btn secondary" style="font-size:12px;padding:8px 14px;letter-spacing:1px;flex:none;min-width:auto" onclick="openEditResult(' + idx + ')">✏️ Edit Score</button>' +
+          '<button class="action-btn secondary" style="font-size:12px;padding:8px 14px;letter-spacing:1px;flex:none;min-width:auto" onclick="openEditVotes(' + idx + ')">🏆 Edit Votes</button>' +
           '<button class="action-btn danger" style="font-size:12px;padding:8px 14px;letter-spacing:1px;flex:none;min-width:auto" onclick="deleteArchivedResult(' + idx + ')">🗑 Delete</button>' +
         '</div>' +
       '</div>';
@@ -3681,6 +3709,9 @@
 
     // Build goal rows prefilled with saved data
     buildEditGoalRows(fkfcVal, editingGoalsCache);
+
+    // Close votes panel if open
+    document.getElementById('edit-votes-panel').style.display = 'none';
 
     // Scroll to panel and show it
     const panel = document.getElementById('edit-result-panel');
@@ -3833,8 +3864,20 @@
       // Update playerStats
       await dbSet('playerStats', newPS);
 
+      // Force local state immediately
+      state.playerStats = newPS;
+      if (state.archive[editingArchiveIdx]) {
+        state.archive[editingArchiveIdx] = { ...state.archive[editingArchiveIdx], fkfc, opp, result: rc, goals: newGoals, squad: newSquad };
+      }
+
+      renderAdminResults();
+      renderSeasonStandings('season-standings-admin');
+
       document.getElementById('edit-save-confirm').style.display = 'block';
-      setTimeout(() => { document.getElementById('edit-save-confirm').style.display = 'none'; }, 3000);
+      setTimeout(() => {
+        document.getElementById('edit-save-confirm').style.display = 'none';
+        document.getElementById('edit-result-panel').style.display = 'none';
+      }, 1500);
     } catch (err) {
       alert('Error saving. Check your connection.'); console.error(err);
     } finally {
@@ -3891,8 +3934,141 @@
     await dbSet('playerStats', newPS);
     await dbRemove('archive/' + keyToDelete);
 
-    // If the edit panel was open for this entry, close it
-    if (editingArchiveIdx === idx) cancelEditResult();
+    // Force local state update immediately (avoid race with Firebase listeners)
+    state.seasonPts  = newSeasonPts;
+    state.playerStats = newPS;
+    state.archive = state.archive.filter(a => !(a.matchName === entry.matchName && a.date === entry.date));
+
+    // Close both edit panels
+    document.getElementById('edit-result-panel').style.display = 'none';
+    document.getElementById('edit-votes-panel').style.display  = 'none';
+    editingArchiveIdx      = null;
+    editingArchiveKey      = null;
+    editingVotesArchiveIdx = null;
+    editingVotesArchiveKey = null;
+
+    // Re-render everything that depends on these values
+    renderAdminResults();
+    renderSeasonStandings('season-standings-admin');
+  };
+
+
+  // ── VOTE EDITING ──────────────────────────────────────────────
+
+  let editingVotesArchiveIdx = null;
+  let editingVotesArchiveKey = null;
+
+  window._impl_openEditVotes = async function(idx) {
+    const entry = state.archive[idx];
+    editingVotesArchiveIdx = idx;
+    const snap = await db.ref('archive').once('value');
+    editingVotesArchiveKey = null;
+    if (snap.exists()) {
+      const obj  = snap.val();
+      editingVotesArchiveKey = Object.keys(obj).find(k => obj[k].matchName === entry.matchName && obj[k].date === entry.date) || null;
+    }
+    if (!editingVotesArchiveKey) { alert('Could not locate this match in the database.'); return; }
+    document.getElementById('edit-votes-title').textContent = '🏆 Edit Votes: vs ' + (entry.opponent || entry.matchName);
+    document.getElementById('edit-votes-confirm').style.display = 'none';
+    const awarded = entry.seasonAwarded || [];
+    renderVoteRows(awarded.length > 0 ? awarded : [{name:'',award:3},{name:'',award:2},{name:'',award:1}]);
+    // Close score panel if open
+    document.getElementById('edit-result-panel').style.display = 'none';
+
+    const panel = document.getElementById('edit-votes-panel');
+    panel.style.display = 'block';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+
+  function renderVoteRows(rows) {
+    const players = getAllPlayers();
+    const container = document.getElementById('edit-votes-rows');
+    const icons = ['🥇','🥈','🥉','🏅'];
+    container.innerHTML = rows.map((r, i) => {
+      const playerOpts = '<option value="">— No player —</option>' +
+        players.map(p => '<option value="' + escHtml(p) + '"' + (r.name === p ? ' selected' : '') + '>' + escHtml(p) + '</option>').join('');
+      return '<div class="vote-edit-row" style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
+        '<input type="number" min="1" max="99" value="' + (r.award || '') + '" placeholder="pts" ' +
+          'style="width:56px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-family:Bebas Neue,sans-serif;font-size:18px;padding:6px 8px;border-radius:8px;text-align:center;outline:none" />' +
+        '<span style="font-size:11px;color:var(--muted)">pts</span>' +
+        '<select style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);font-family:DM Sans,sans-serif;font-size:13px;padding:7px 10px;border-radius:8px;outline:none">' +
+          playerOpts + '</select>' +
+        '<button onclick="removeVoteRow(this)" style="background:transparent;border:1px solid rgba(239,83,80,0.3);color:var(--red);border-radius:6px;width:28px;height:28px;font-size:13px;cursor:pointer;flex-shrink:0">✕</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  window._impl_addVoteRow = function() {
+    const container = document.getElementById('edit-votes-rows');
+    const players = getAllPlayers();
+    const icons = ['🥇','🥈','🥉','🏅'];
+    const playerOpts = '<option value="">— No player —</option>' +
+      players.map(p => '<option value="' + escHtml(p) + '">' + escHtml(p) + '</option>').join('');
+    const row = document.createElement('div');
+    row.className = 'vote-edit-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px';
+    row.innerHTML =
+      '<input type="number" min="1" max="99" value="1" placeholder="pts" ' +
+        'style="width:56px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-family:Bebas Neue,sans-serif;font-size:18px;padding:6px 8px;border-radius:8px;text-align:center;outline:none" />' +
+      '<span style="font-size:11px;color:var(--muted)">pts</span>' +
+      '<select style="flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);font-family:DM Sans,sans-serif;font-size:13px;padding:7px 10px;border-radius:8px;outline:none">' +
+        playerOpts + '</select>' +
+      '<button onclick="removeVoteRow(this)" style="background:transparent;border:1px solid rgba(239,83,80,0.3);color:var(--red);border-radius:6px;width:28px;height:28px;font-size:13px;cursor:pointer;flex-shrink:0">✕</button>';
+    container.appendChild(row);
+  };
+
+  window.removeVoteRow = function(btn) { btn.closest('.vote-edit-row').remove(); };
+
+  window._impl_cancelEditVotes = function() {
+    document.getElementById('edit-votes-panel').style.display = 'none';
+    editingVotesArchiveIdx = null;
+    editingVotesArchiveKey = null;
+  };
+
+  window._impl_saveEditedVotes = async function() {
+    if (!editingVotesArchiveKey) { alert('No match selected.'); return; }
+    const newAwarded = [];
+    const icons = ['🥇','🥈','🥉','🏅'];
+    document.querySelectorAll('#edit-votes-rows .vote-edit-row').forEach((row, i) => {
+      const pts    = parseInt(row.querySelector('input[type=number]').value) || 0;
+      const player = row.querySelector('select').value;
+      if (pts > 0 && player) newAwarded.push({ name: player, award: pts, icon: icons[Math.min(i, 3)] });
+    });
+    const oldEntry   = state.archive[editingVotesArchiveIdx];
+    const oldAwarded = oldEntry.seasonAwarded || [];
+    const newSeasonPts = JSON.parse(JSON.stringify(state.seasonPts || {}));
+    oldAwarded.forEach(r => {
+      if (r.name) {
+        newSeasonPts[r.name] = (newSeasonPts[r.name] || 0) - r.award;
+        if (newSeasonPts[r.name] <= 0) delete newSeasonPts[r.name];
+      }
+    });
+    newAwarded.forEach(r => { newSeasonPts[r.name] = (newSeasonPts[r.name] || 0) + r.award; });
+    const btn = document.querySelector('#edit-votes-panel .action-btn.primary');
+    btn.disabled = true; btn.innerHTML = '<span class="loading-spinner"></span>Saving...';
+    try {
+      await dbUpdate('archive/' + editingVotesArchiveKey, { seasonAwarded: newAwarded });
+      await dbSet('seasonPts', newSeasonPts);
+
+      // Force local state immediately
+      state.seasonPts = newSeasonPts;
+      if (state.archive[editingVotesArchiveIdx]) {
+        state.archive[editingVotesArchiveIdx] = { ...state.archive[editingVotesArchiveIdx], seasonAwarded: newAwarded };
+      }
+
+      renderSeasonStandings('season-standings-admin');
+      renderAdminResults();
+      document.getElementById('edit-votes-confirm').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('edit-votes-confirm').style.display = 'none';
+        document.getElementById('edit-votes-panel').style.display = 'none';
+      }, 1500);
+    } catch(err) {
+      alert('Error saving. Check your connection.'); console.error(err);
+    } finally {
+      btn.disabled = false; btn.textContent = '💾 Save Votes';
+    }
   };
 
   function launchConfetti() {
