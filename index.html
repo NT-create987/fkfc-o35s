@@ -1646,6 +1646,11 @@
         <div class="admin-section-title">🏴‍☠️ Season Fines</div>
         <div class="section-title">Total fines per player (all matches)</div>
         <div id="season-fines-admin"></div>
+        <div style="margin-top:24px">
+          <div class="admin-section-title" style="font-size:15px;margin-bottom:4px">📋 Season Fines Breakdown</div>
+          <div class="section-title" style="margin-bottom:12px">All fines by player — edit or delete individual entries</div>
+          <div id="season-fines-log-admin"></div>
+        </div>
       </div>
     </div><!-- /admin-sub-fines -->
 
@@ -1733,6 +1738,7 @@
     'showResetAvailConfirm','hideResetAvailConfirm','closeAvailability','resetAvailability',
     'selectFormation','clearFormationBuilder','onPosSelectChange','onBenchSelectChange','postLineup','editPostedLineup','unpostLineup',
     'addFine','deleteFine','showDeleteAllFinesConfirm','hideDeleteAllFinesConfirm','deleteAllFines',
+    'editSeasonFine','saveSeasonFine','cancelSeasonFine','deleteSeasonFine',
     'openEditResult','cancelEditResult','onEditScoreChange','saveEditedResult','deleteArchivedResult',
     'openEditVotes','cancelEditVotes','saveEditedVotes','addVoteRow',
     'checkPin'
@@ -1871,6 +1877,7 @@
     archive:          [],
     matchFines:       {},
     seasonFines:      {},
+    seasonFinesLog:   [],
     availability:     {},
     nextGame:         null,
     voteOffenses:     {},
@@ -1918,6 +1925,7 @@
   dbListen('archive',          v => { state.archive          = v ? Object.values(v).reverse() : []; onDataChange(); });
   dbListen('matchFines',       v => { state.matchFines       = v || {};                              onDataChange(); });
   dbListen('seasonFines',      v => { state.seasonFines      = v || {};                              onDataChange(); });
+  dbListen('seasonFinesLog',   v => { state.seasonFinesLog   = v ? Object.entries(v).map(([k,f]) => ({...f, _key: k})) : []; onDataChange(); });
   dbListen('availability',     v => { state.availability     = v || {};                              onDataChange(); });
   dbListen('nextGame',         v => { state.nextGame         = v;                                    onDataChange(); });
   dbListen('voteOffenses',     v => { state.voteOffenses     = v || {};                              onDataChange(); });
@@ -2067,11 +2075,14 @@
       const manualFines  = allFines.filter(f => !isOffense(f)).sort((a,b) => a.player.localeCompare(b.player));
       const offenseFines = allFines.filter(f =>  isOffense(f)).sort((a,b) => a.player.localeCompare(b.player));
       function fineItemHtml(f, off) {
+        const displayDesc = off
+          ? (/voting offense/i.test(f.desc) ? 'Voting infringement' : 'Availability infringement')
+          : f.desc;
         return '<div class="fine-item' + (off ? ' offense-fine' : '') + '"><div class="fine-item-left"><div class="fine-player">' + f.player + '</div>' +
-          '<div class="fine-desc">' + f.desc + '</div></div><div class="fine-amount">$' + f.amount + '</div></div>';
+          '<div class="fine-desc">' + displayDesc + '</div></div><div class="fine-amount">$' + f.amount + '</div></div>';
       }
       let html = '';
-      if (manualFines.length > 0)  { html += '<div class="section-title" style="margin-bottom:10px">😂 Match Fines</div>' + manualFines.map(f => fineItemHtml(f,false)).join(''); }
+      if (manualFines.length > 0)  { html += '<div class="section-title" style="margin-bottom:10px">💸 Match Fines</div>' + manualFines.map(f => fineItemHtml(f,false)).join(''); }
       if (offenseFines.length > 0) { html += '<div class="section-title" style="margin-bottom:10px;margin-top:' + (manualFines.length ? '20px' : '0') + '">📋 Voting & Availability Fines</div>' + offenseFines.map(f => fineItemHtml(f,true)).join(''); }
       finesList.innerHTML = html;
       const total = allFines.reduce((s,f) => s + Number(f.amount), 0);
@@ -2631,9 +2642,18 @@
       awardRows.forEach(r => { newSeasonPts[r.name] = (newSeasonPts[r.name] || 0) + r.award; });
       await dbSet('seasonPts', newSeasonPts);
 
-      // Season fines
-      const newSeasonFines = { ...state.seasonFines };
-      finesArr.forEach(f => { newSeasonFines[f.player] = (newSeasonFines[f.player] || 0) + Number(f.amount); });
+      // Season fines — push each fine into the log, then recompute totals
+      const matchMeta = { matchName: match.name, opponent: match.opponent || '', matchDate: match.formattedDate || match.matchDate || '' };
+      // Build the complete updated log locally before Firebase listener fires
+      const existingLog = state.seasonFinesLog || [];
+      const newLogEntries = finesArr.map(f => ({ player: f.player, desc: f.desc, amount: Number(f.amount), matchName: matchMeta.matchName, opponent: matchMeta.opponent, matchDate: matchMeta.matchDate, time: f.time || new Date().toLocaleString() }));
+      for (const entry of newLogEntries) {
+        await dbPush('seasonFinesLog', entry);
+      }
+      // Recompute totals from existing log + new entries (don't wait for listener)
+      const allLogEntries = [...existingLog, ...newLogEntries];
+      const newSeasonFines = {};
+      allLogEntries.forEach(f => { newSeasonFines[f.player] = (newSeasonFines[f.player] || 0) + Number(f.amount); });
       await dbSet('seasonFines', newSeasonFines);
 
       // Player stats — roll in goals/assists/appearances
@@ -2742,6 +2762,7 @@
     await dbRemove('seasonPts');
     await dbRemove('archive');
     await dbRemove('seasonFines');
+    await dbRemove('seasonFinesLog');
     await dbRemove('playerStats');
     await dbRemove('voteOffenses');
     await dbRemove('availOffenses');
@@ -2879,6 +2900,129 @@
       sorted.map(([name, amt], i) => '<tr><td>' + (i+1) + '</td><td>' + name + '</td><td style="color:var(--red)">$' + amt + '</td></tr>').join('') +
       '</tbody></table>';
   }
+
+  // Season fines log — grouped by player, with edit/delete per entry
+  let _editingSeasonFineKey = null;
+
+  function renderSeasonFinesLog() {
+    const el = document.getElementById('season-fines-log-admin');
+    if (!el) return;
+    const log = state.seasonFinesLog || [];
+    if (log.length === 0) { el.innerHTML = '<div class="no-votes">No season fines recorded yet</div>'; return; }
+
+    // Group by player
+    const byPlayer = {};
+    log.forEach(f => {
+      if (!byPlayer[f.player]) byPlayer[f.player] = [];
+      byPlayer[f.player].push(f);
+    });
+
+    const players = Object.keys(byPlayer).sort();
+    el.innerHTML = players.map(player => {
+      const fines = byPlayer[player];
+      const playerTotal = fines.reduce((s, f) => s + Number(f.amount), 0);
+      const rows = fines.map(f => {
+        const isEditing = _editingSeasonFineKey === f._key;
+        const matchLabel = (f.opponent ? 'vs ' + escHtml(f.opponent) : escHtml(f.matchName || '')) + (f.matchDate ? ' · ' + escHtml(f.matchDate) : '');
+        if (isEditing) {
+          return '<div style="background:var(--card2);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:8px;padding:8px 10px;margin-bottom:4px;display:flex;flex-direction:column;gap:6px" id="sflog-edit-' + f._key + '">' +
+            '<div style="font-size:10px;color:var(--muted)">' + matchLabel + '</div>' +
+            '<div style="display:flex;gap:6px;align-items:center">' +
+            '<input class="text-input" style="margin-bottom:0;flex:1;font-size:12px;padding:4px 8px;height:30px" id="sflog-desc-' + f._key + '" value="' + escHtml(f.desc) + '" placeholder="Description">' +
+            '<input class="text-input" style="margin-bottom:0;width:60px;font-size:12px;padding:4px 8px;height:30px" id="sflog-amt-' + f._key + '" type="number" min="1" value="' + f.amount + '" placeholder="$">' +
+            '<button class="action-btn primary" style="padding:4px 10px;font-size:11px;height:30px;white-space:nowrap" onclick="saveSeasonFine(\'' + f._key + '\')">&#128190; Save</button>' +
+            '<button class="action-btn secondary" style="padding:4px 8px;font-size:11px;height:30px" onclick="cancelSeasonFine()">&times;</button>' +
+            '</div></div>';
+        }
+        return '<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;border-radius:6px;margin-bottom:2px;background:var(--card2);border:1px solid var(--border)">' +
+          '<div style="flex:1;min-width:0;display:flex;align-items:center;gap:6px;overflow:hidden">' +
+          '<span style="font-size:10px;color:var(--muted);white-space:nowrap;flex-shrink:0">' + matchLabel + '</span>' +
+          '<span style="font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(f.desc) + '</span>' +
+          '</div>' +
+          '<span style="font-family:Bebas Neue,sans-serif;font-size:14px;color:var(--red);white-space:nowrap;flex-shrink:0">$' + f.amount + '</span>' +
+          '<button class="action-btn secondary" style="padding:2px 7px;font-size:11px;height:22px;flex-shrink:0;min-height:unset" onclick="editSeasonFine(\'' + f._key + '\')">&#9998;</button>' +
+          '<button class="delete-fine-btn" style="width:22px;height:22px;font-size:10px;flex-shrink:0" onclick="deleteSeasonFine(\'' + f._key + '\')" title="Delete">&times;</button>' +
+          '</div>';
+      }).join('');
+
+      return '<div style="margin-bottom:12px">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;padding-bottom:3px;border-bottom:1px solid var(--border)">' +
+        '<div style="font-weight:700;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted)">' + escHtml(player) + '</div>' +
+        '<div style="color:var(--red);font-weight:700;font-size:12px">$' + playerTotal + '</div>' +
+        '</div>' +
+        rows + '</div>';
+    }).join('');
+
+  }
+
+  window._impl_editSeasonFine = function(key) {
+    _editingSeasonFineKey = key;
+    renderSeasonFinesLog();
+  };
+
+  window._impl_cancelSeasonFine = function() {
+    _editingSeasonFineKey = null;
+    renderSeasonFinesLog();
+  };
+
+  window._impl_saveSeasonFine = async function(key) {
+    const descEl = document.getElementById('sflog-desc-' + key);
+    const amtEl  = document.getElementById('sflog-amt-'  + key);
+    if (!descEl || !amtEl) { console.error('saveSeasonFine: inputs not found for key', key); return; }
+    const desc   = descEl.value.trim();
+    const amount = Number(amtEl.value);
+    if (!desc)                  { descEl.style.borderColor = 'var(--red)'; return; }
+    if (!amount || amount <= 0) { amtEl.style.borderColor  = 'var(--red)'; return; }
+
+    try {
+      // Single atomic write for both fields
+      await dbUpdate('seasonFinesLog/' + key, { desc, amount });
+
+      // Read authoritative log from Firebase, recompute totals
+      const freshLog  = await dbGet('seasonFinesLog');
+      const entries   = freshLog ? Object.values(freshLog) : [];
+      const newTotals = {};
+      entries.forEach(f => {
+        if (f.player && f.amount) newTotals[f.player] = (newTotals[f.player] || 0) + Number(f.amount);
+      });
+      Object.keys(newTotals).forEach(p => { if (newTotals[p] <= 0) delete newTotals[p]; });
+      await dbSet('seasonFines', newTotals);
+
+      // Update local state from Firebase before re-rendering
+      state.seasonFinesLog = Object.entries(freshLog).map(([k, f]) => ({ ...f, _key: k }));
+      state.seasonFines    = newTotals;
+      _editingSeasonFineKey = null;
+      renderSeasonFinesLog();
+      renderSeasonFinesStandings('season-fines-admin');
+    } catch (err) {
+      console.error('saveSeasonFine error:', err);
+      const editEl = document.getElementById('sflog-edit-' + key);
+      if (editEl) editEl.insertAdjacentHTML('afterbegin', '<div style="color:var(--red);font-size:12px;margin-bottom:6px">Error saving — please try again</div>');
+    }
+  };
+
+  window._impl_deleteSeasonFine = async function(key) {
+    try {
+      await dbRemove('seasonFinesLog/' + key);
+
+      // Read authoritative log from Firebase, recompute totals
+      const freshLog  = await dbGet('seasonFinesLog');
+      const entries   = freshLog ? Object.values(freshLog) : [];
+      const newTotals = {};
+      entries.forEach(f => {
+        if (f.player && f.amount) newTotals[f.player] = (newTotals[f.player] || 0) + Number(f.amount);
+      });
+      Object.keys(newTotals).forEach(p => { if (newTotals[p] <= 0) delete newTotals[p]; });
+      await dbSet('seasonFines', newTotals);
+
+      // Update local state and re-render immediately
+      state.seasonFinesLog = freshLog ? Object.entries(freshLog).map(([k, f]) => ({ ...f, _key: k })) : [];
+      state.seasonFines    = newTotals;
+      renderSeasonFinesLog();
+      renderSeasonFinesStandings('season-fines-admin');
+    } catch (err) { console.error('deleteSeasonFine error:', err); }
+  };
+
 
   // ============================================================
   // AVAILABILITY ADMIN
@@ -3547,6 +3691,7 @@
 
     renderFinesList();
     renderSeasonFinesStandings('season-fines-admin');
+    renderSeasonFinesLog();
   }
 
   window._impl_addFine = async function() {
@@ -3562,12 +3707,15 @@
       document.getElementById('fine-player-select').value = '';
       document.getElementById('fine-desc-input').value    = '';
       document.getElementById('fine-amount-input').value  = '';
+      state.matchFines = (await dbGet('matchFines')) || {};
+      renderFinesList();
     } catch (err) { alert('Error saving fine.'); console.error(err); }
   };
 
   window._impl_deleteFine = async function(key) {
-    if (!confirm('Delete this fine?')) return;
     await dbRemove('matchFines/' + key);
+    state.matchFines = (await dbGet('matchFines')) || {};
+    renderFinesList();
   };
 
   window._impl_showDeleteAllFinesConfirm = () => { document.getElementById('delete-all-fines-confirm-box').style.display = 'block'; };
