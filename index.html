@@ -1238,6 +1238,22 @@
   .sv-chip-2 { background: rgba(176,190,197,0.1); color: var(--silver); border: 1px solid rgba(176,190,197,0.3); }
   .sv-chip-3 { background: rgba(255,138,101,0.1); color: var(--bronze); border: 1px solid rgba(255,138,101,0.3); }
   .sv-chip-p { background: rgba(0,204,106,0.1); color: var(--green); border: 1px solid rgba(0,204,106,0.3); }
+  .sv-chip-zero { background: rgba(100,100,100,0.08); color: var(--muted); border-color: rgba(100,100,100,0.2); }
+  .sv-vote-zero .sv-vname { color: var(--muted); }
+  /* Counts leaderboard + closed vote table */
+  .sv-counts-table, .sv-closed-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
+  .sv-counts-table th, .sv-closed-table th { background: var(--card); color: var(--muted); padding: 6px 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
+  .sv-counts-table th:nth-child(2), .sv-closed-table th:nth-child(2) { text-align: left; }
+  .sv-counts-table td, .sv-closed-table td { padding: 5px 8px; border-bottom: 1px solid rgba(30,45,61,0.6); vertical-align: middle; text-align: center; }
+  .sv-counts-table tr:last-child td, .sv-closed-table tr:last-child td { border-bottom: none; }
+  .sv-ct-rank { font-family: 'Bebas Neue', sans-serif; font-size: 15px; color: var(--muted); width: 28px; }
+  .sv-ct-name { text-align: left !important; font-weight: 500; }
+  .sv-ct-chip { font-weight: 600; }
+  .sv-ct-vpts { color: var(--green); font-family: 'Bebas Neue', sans-serif; font-size: 15px; }
+  .sv-ct-spts { color: var(--gold); font-weight: 600; font-size: 12px; }
+  .sv-closed-table tr.rank-1 .sv-ct-name { color: var(--gold); }
+  .sv-closed-table tr.rank-2 .sv-ct-name { color: var(--silver); }
+  .sv-closed-table tr.rank-3 .sv-ct-name { color: var(--bronze); }
   .sv-editor { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 12px; display: none; }
   .sv-editor-hint { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
   .sv-edit-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -1752,8 +1768,14 @@
     <!-- ---- SEASON VOTES ADMIN ---- -->
     <div class="admin-subsection" id="admin-sub-seasonvotes">
       <div class="admin-section">
-        <div class="admin-section-title">🗳️ Season Vote Leaderboard</div>
+        <div class="admin-section-title">🏆 Season Points</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">Cumulative weighted points (1st vote = 3pts · 2nd = 2pts · 3rd = 1pt) across all matches.</p>
         <div id="sv-leaderboard"></div>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-title">📊 Total Vote Counts</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">How many times each player has been voted 1st, 2nd, or 3rd across the season.</p>
+        <div id="sv-leaderboard-counts"></div>
       </div>
       <div class="admin-section">
         <div class="admin-section-title">📋 Per-Match Breakdown</div>
@@ -2066,18 +2088,29 @@
   }
 
   function renderClosedLeaderboard() {
-    const sorted   = getMatchTally();
-    const awardRows = buildSeasonAwardRows(sorted);
+    const sorted     = getMatchTally();
+    const detailed   = getMatchTallyDetail();
+    const awardRows  = buildSeasonAwardRows(sorted);
+    const awardMap   = {};
+    awardRows.forEach(r => { awardMap[r.name] = { award: r.award, icon: r.icon }; });
     const rankClasses = ['rank-1','rank-2','rank-3'];
 
-    document.getElementById('closed-podium').innerHTML = sorted.length === 0
+    document.getElementById('closed-podium').innerHTML = detailed.length === 0
       ? '<div class="no-votes">No votes were recorded.</div>'
-      : awardRows.map((r, i) =>
-          '<div class="podium-row ' + rankClasses[Math.min(i, 2)] + '">' +
-          '<div class="rank-badge">' + (i+1) + '</div>' +
-          '<div class="rank-name">' + escHtml(r.name) + '</div>' +
-          '<div><div class="rank-pts">' + r.award + '</div><div class="rank-pts-label">season pts</div></div></div>'
-        ).join('');
+      : '<table class="sv-closed-table"><thead><tr><th>#</th><th>Player</th><th>🥇</th><th>🥈</th><th>🥉</th><th>Vote pts</th><th>Season pts</th></tr></thead><tbody>' +
+        detailed.map((r, i) => {
+          const aw = awardMap[r.name];
+          return '<tr class="' + (rankClasses[i] || '') + '">' +
+            '<td class="sv-ct-rank">' + (aw ? aw.icon : (i+1)) + '</td>' +
+            '<td class="sv-ct-name">' + escHtml(r.name) + '</td>' +
+            '<td class="sv-ct-chip">' + r.first + '</td>' +
+            '<td class="sv-ct-chip">' + r.second + '</td>' +
+            '<td class="sv-ct-chip">' + r.third + '</td>' +
+            '<td class="sv-ct-vpts">' + r.pts + '</td>' +
+            '<td class="sv-ct-spts">' + (aw ? '+' + aw.award : '—') + '</td>' +
+            '</tr>';
+        }).join('') +
+        '</tbody></table>';
 
     // Scoreline
     const result = state.matchResult;
@@ -2656,6 +2689,28 @@
     return Object.entries(tally).filter(([,pts]) => pts > 0).sort((a,b) => b[1]-a[1]);
   }
 
+  // Returns [{name, pts, first, second, third}, ...] sorted by pts desc — for display purposes
+  function getMatchTallyDetail() {
+    const match = state.match;
+    const tally = {};
+    getAllPlayers().forEach(p => { tally[p] = { pts:0, first:0, second:0, third:0 }; });
+    Object.values(state.votes)
+      .filter(v => !match || v.matchName === match.name)
+      .forEach(v => {
+        const p1 = v.picks[1], p2 = v.picks[2], p3 = v.picks[3];
+        if (!tally[p1]) tally[p1] = { pts:0, first:0, second:0, third:0 };
+        if (!tally[p2]) tally[p2] = { pts:0, first:0, second:0, third:0 };
+        if (!tally[p3]) tally[p3] = { pts:0, first:0, second:0, third:0 };
+        tally[p1].first++; tally[p1].pts += 3;
+        tally[p2].second++; tally[p2].pts += 2;
+        tally[p3].third++; tally[p3].pts += 1;
+      });
+    return Object.entries(tally)
+      .filter(([, v]) => v.pts > 0)
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.pts - a.pts);
+  }
+
   function buildSeasonAwardRows(sorted) {
     const seasonPtsMap = [3, 2, 1];
     const icons = ['🥇','🥈','🥉'];
@@ -2756,7 +2811,7 @@
       const votesSnap = await db.ref('votes').once('value');
       const votesTally = tallyVotesForMatch(votesSnap.val(), match.name);
       const matchKey = sanitiseKey(match.name);
-      await writeSeasonVotesForMatch(matchKey, match.name, votesTally);
+      await writeSeasonVotesForMatch(matchKey, match.name, votesTally, selectedSquad.slice());
 
       // Clear match data
       await dbRemove('match');
@@ -4361,10 +4416,11 @@
   }
 
   // Write a match's vote tally to seasonVotes (called on archive)
-  async function writeSeasonVotesForMatch(matchKey, matchLabel, tally) {
+  async function writeSeasonVotesForMatch(matchKey, matchLabel, tally, squad) {
     const updates = {};
     updates['matches/' + matchKey + '/label'] = matchLabel;
     updates['matches/' + matchKey + '/votes'] = Object.keys(tally).length > 0 ? tally : null;
+    if (squad && squad.length) updates['matches/' + matchKey + '/squad'] = squad;
     await db.ref('seasonVotes').update(updates);
     for (const [player, data] of Object.entries(tally)) {
       await db.ref('seasonVotes/totals/' + player).transaction(cur => (cur || 0) + data.pts);
@@ -4401,28 +4457,65 @@
 
   // Render the full Season Votes admin section
   function renderSeasonVotesAdmin() {
-    renderSVLeaderboard();
+    renderSVLeaderboards();
     renderSVMatchList();
   }
 
-  function renderSVLeaderboard() {
-    const el = document.getElementById('sv-leaderboard');
-    if (!el) return;
-    db.ref('seasonVotes/totals').once('value').then(snap => {
-      const totals = snap.val() || {};
-      const sorted = Object.entries(totals).filter(([,v]) => v > 0).sort(([,a],[,b]) => b - a);
-      if (!sorted.length) { el.innerHTML = '<div class="no-votes">No votes recorded yet.</div>'; return; }
-      const max = sorted[0][1] || 1;
-      el.innerHTML = '<div class="sv-board">' +
-        sorted.map(([name, pts], i) =>
-          '<div class="sv-row">' +
-          '<span class="sv-rank">' + (i + 1) + '</span>' +
-          '<span class="sv-name">' + escHtml(name) + '</span>' +
-          '<div class="sv-bar-wrap"><div class="sv-bar" style="width:' + Math.round(pts / max * 100) + '%"></div></div>' +
-          '<span class="sv-pts">' + pts + ' pts</span>' +
-          '</div>'
-        ).join('') +
-        '</div>';
+  function renderSVLeaderboards() {
+    const elPts    = document.getElementById('sv-leaderboard');
+    const elCounts = document.getElementById('sv-leaderboard-counts');
+    if (!elPts && !elCounts) return;
+    db.ref('seasonVotes/matches').once('value').then(snap => {
+      const matches = snap.val() || {};
+      // Aggregate pts and counts from all match entries
+      const pts    = {};  // name → total weighted pts
+      const counts = {};  // name → { first, second, third }
+      Object.values(matches).forEach(match => {
+        Object.entries(match.votes || {}).forEach(([name, v]) => {
+          pts[name]    = (pts[name] || 0) + (v.pts || 0);
+          if (!counts[name]) counts[name] = { first:0, second:0, third:0 };
+          counts[name].first  += (v.first  || 0);
+          counts[name].second += (v.second || 0);
+          counts[name].third  += (v.third  || 0);
+        });
+      });
+      // Points leaderboard (bar chart)
+      if (elPts) {
+        const sortedPts = Object.entries(pts).filter(([,v]) => v > 0).sort(([,a],[,b]) => b - a);
+        if (!sortedPts.length) { elPts.innerHTML = '<div class="no-votes">No votes recorded yet.</div>'; }
+        else {
+          const max = sortedPts[0][1] || 1;
+          elPts.innerHTML = '<div class="sv-board">' +
+            sortedPts.map(([name, p], i) =>
+              '<div class="sv-row">' +
+              '<span class="sv-rank">' + (i+1) + '</span>' +
+              '<span class="sv-name">' + escHtml(name) + '</span>' +
+              '<div class="sv-bar-wrap"><div class="sv-bar" style="width:' + Math.round(p/max*100) + '%"></div></div>' +
+              '<span class="sv-pts">' + p + ' pts</span>' +
+              '</div>'
+            ).join('') + '</div>';
+        }
+      }
+      // Vote counts leaderboard (table: total 1sts / 2nds / 3rds)
+      if (elCounts) {
+        const sortedC = Object.entries(counts)
+          .filter(([,c]) => c.first+c.second+c.third > 0)
+          .sort(([,a],[,b]) => (b.first*100+b.second*10+b.third) - (a.first*100+a.second*10+a.third));
+        if (!sortedC.length) { elCounts.innerHTML = '<div class="no-votes">No votes recorded yet.</div>'; }
+        else {
+          elCounts.innerHTML =
+            '<table class="sv-counts-table"><thead><tr><th>#</th><th>Player</th><th>🥇 1st</th><th>🥈 2nd</th><th>🥉 3rd</th><th>Total</th></tr></thead><tbody>' +
+            sortedC.map(([name, c], i) =>
+              '<tr><td class="sv-ct-rank">' + (i+1) + '</td>' +
+              '<td class="sv-ct-name">' + escHtml(name) + '</td>' +
+              '<td class="sv-ct-chip">' + c.first + '</td>' +
+              '<td class="sv-ct-chip">' + c.second + '</td>' +
+              '<td class="sv-ct-chip">' + c.third + '</td>' +
+              '<td class="sv-ct-vpts">' + (c.first+c.second+c.third) + '</td></tr>'
+            ).join('') +
+            '</tbody></table>';
+        }
+      }
     });
   }
 
@@ -4435,21 +4528,27 @@
       if (!entries.length) { el.innerHTML = '<div class="no-votes">No archived matches yet.</div>'; return; }
       el.innerHTML = entries.map(([key, match]) => {
         const votes  = match.votes || {};
-        const total  = Object.values(votes).reduce((s, v) => s + (v.pts || 0), 0);
-        const sorted = Object.entries(votes).sort(([,a],[,b]) => b.pts - a.pts);
-        const voteRows = sorted.map(([name, v]) =>
-          '<div class="sv-vote-row">' +
-          '<span class="sv-vname">' + escHtml(name) + '</span>' +
-          '<span class="sv-chip sv-chip-1">🥇 ' + v.first + '</span>' +
-          '<span class="sv-chip sv-chip-2">🥈 ' + v.second + '</span>' +
-          '<span class="sv-chip sv-chip-3">🥉 ' + v.third + '</span>' +
-          '<span class="sv-chip sv-chip-p">' + v.pts + ' pts</span>' +
+        const squad  = match.squad || [];
+        // Merge squad (0-vote members) with vote recipients
+        const allNames = [...new Set([...squad, ...Object.keys(votes)])];
+        const rows = allNames
+          .map(name => ({ name, ...(votes[name] || { first:0, second:0, third:0, pts:0 }) }))
+          .sort((a, b) => b.pts - a.pts);
+        const total     = rows.reduce((s, r) => s + r.pts, 0);
+        const withVotes = rows.filter(r => r.pts > 0).length;
+        const voteRows  = rows.map(r =>
+          '<div class="sv-vote-row' + (r.pts === 0 ? ' sv-vote-zero' : '') + '">' +
+          '<span class="sv-vname">' + escHtml(r.name) + '</span>' +
+          '<span class="sv-chip sv-chip-1">🥇 ' + r.first + '</span>' +
+          '<span class="sv-chip sv-chip-2">🥈 ' + r.second + '</span>' +
+          '<span class="sv-chip sv-chip-3">🥉 ' + r.third + '</span>' +
+          '<span class="sv-chip sv-chip-p' + (r.pts === 0 ? ' sv-chip-zero' : '') + '">' + r.pts + ' pts</span>' +
           '</div>'
         ).join('');
         return '<div class="sv-match-card" id="svm-' + key + '">' +
           '<div class="sv-match-header">' +
           '<div><div class="sv-match-name">' + escHtml(match.label || key) + '</div>' +
-          '<div class="sv-match-sub">' + sorted.length + ' players · ' + total + ' pts total</div></div>' +
+          '<div class="sv-match-sub">' + withVotes + ' voted · ' + rows.length + ' in squad · ' + total + ' pts total</div></div>' +
           '<button class="sv-edit-btn" onclick="openSVEditor(\'' + key + '\')">✏️ Edit</button>' +
           '</div>' +
           '<div class="sv-votes-list" id="svvotes-' + key + '">' + voteRows + '</div>' +
@@ -4527,7 +4626,7 @@
       await diffAndUpdateSeasonVotes(matchKey, matchLabel, oldTally, newTally);
       statusEl.textContent = '✅ Saved!';
       statusEl.style.color = 'var(--green)';
-      renderSVLeaderboard();
+      renderSVLeaderboards();
       renderSVMatchList();
     } catch(e) {
       statusEl.textContent = '❌ Error — check console';
