@@ -1213,6 +1213,43 @@
     text-align: center;
   }
   .formation-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+  /* ── SEASON VOTES ADMIN ── */
+  .sv-board { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
+  .sv-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .sv-row:last-child { border-bottom: none; }
+  .sv-rank { width: 22px; color: var(--gold); font-weight: 700; font-size: 12px; text-align: center; flex-shrink: 0; }
+  .sv-name { flex: 1; font-weight: 500; font-size: 13px; }
+  .sv-bar-wrap { flex: 2; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .sv-bar { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.4s ease; }
+  .sv-pts { color: var(--green); font-family: 'Bebas Neue', sans-serif; font-size: 17px; min-width: 56px; text-align: right; }
+  .sv-match-card { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+  .sv-match-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .sv-match-name { font-weight: 600; font-size: 13px; color: var(--text); }
+  .sv-match-sub { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .sv-edit-btn { background: transparent; border: 1px solid rgba(66,165,245,0.5); color: var(--blue); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
+  .sv-edit-btn:hover { background: rgba(66,165,245,0.1); border-color: var(--blue); }
+  .sv-votes-list { margin-top: 10px; }
+  .sv-vote-row { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-bottom: 1px solid rgba(30,45,61,0.8); font-size: 12px; flex-wrap: wrap; }
+  .sv-vote-row:last-child { border-bottom: none; }
+  .sv-vname { flex: 1; min-width: 70px; font-weight: 500; }
+  .sv-chip { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .sv-chip-1 { background: rgba(255,214,0,0.12); color: var(--gold); border: 1px solid rgba(255,214,0,0.4); }
+  .sv-chip-2 { background: rgba(176,190,197,0.1); color: var(--silver); border: 1px solid rgba(176,190,197,0.3); }
+  .sv-chip-3 { background: rgba(255,138,101,0.1); color: var(--bronze); border: 1px solid rgba(255,138,101,0.3); }
+  .sv-chip-p { background: rgba(0,204,106,0.1); color: var(--green); border: 1px solid rgba(0,204,106,0.3); }
+  .sv-editor { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 12px; display: none; }
+  .sv-editor-hint { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.5; }
+  .sv-edit-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .sv-edit-table th { background: var(--card); color: var(--muted); padding: 6px 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; text-align: left; border-bottom: 1px solid var(--border); }
+  .sv-edit-table td { padding: 5px 8px; border-bottom: 1px solid rgba(30,45,61,0.6); vertical-align: middle; }
+  .sv-edit-table tr:last-child td { border-bottom: none; }
+  .sv-player-cell { font-weight: 500; font-size: 12px; }
+  .sv-row-pts-cell { color: var(--green); font-family: 'Bebas Neue', sans-serif; font-size: 16px; white-space: nowrap; }
+  .sv-num-input { width: 48px; background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 4px 6px; border-radius: 5px; font-size: 13px; text-align: center; outline: none; font-family: 'Bebas Neue', sans-serif; transition: border-color 0.15s; }
+  .sv-num-input:focus { border-color: var(--green); }
+  .sv-editor-actions { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+  .sv-save-status { font-size: 12px; }
 </style>
 </head>
 <body>
@@ -1383,6 +1420,7 @@
       <button class="admin-tab" data-sub="availability"><span class="tab-icon">📋</span><span class="tab-label">Avail.</span></button>
       <button class="admin-tab" data-sub="fines"><span class="tab-icon">💸</span><span class="tab-label">Fines</span></button>
       <button class="admin-tab" data-sub="results"><span class="tab-icon">✏️</span><span class="tab-label">Results</span></button>
+      <button class="admin-tab" data-sub="seasonvotes"><span class="tab-icon">🗳️</span><span class="tab-label">Votes</span></button>
     </div>
 
     <!-- ---- VOTING ADMIN ---- -->
@@ -1415,15 +1453,15 @@
         <div id="active-controls" style="display:none">
           <div class="btn-row" style="margin-bottom:10px">
             <button class="action-btn secondary" onclick="toggleModify()">✏️ Modify Squad</button>
-            <button class="action-btn warning" id="close-voting-btn" onclick="showCloseVotingPanel()" disabled title="You must press Close for Fines first">🛑 Close Voting</button>
+            <button class="action-btn warning" id="close-voting-btn" onclick="showCloseVotingPanel()">🛑 Close Voting</button>
           </div>
           <div class="btn-row" style="margin-bottom:10px">
-            <button class="action-btn info" id="close-for-fines-btn" onclick="showCloseForFinesConfirm()">💸 Close for Fines</button>
+            <button class="action-btn info" id="close-for-fines-btn" onclick="showCloseForFinesConfirm()">💸 Issue Voting Fines (Optional)</button>
           </div>
 
           <!-- Close for Fines confirm -->
           <div class="warning-confirm-box" id="close-for-fines-confirm-box">
-            <p>Issue a $10 fine to all squad members who haven't voted yet? Voting will remain open.</p>
+            <p>Issue a $10 fine to all squad members who haven't voted yet? This is optional and can be done before or after closing voting. One-time only.</p>
             <div class="btn-row">
               <button class="action-btn info"      onclick="closeForFines()">Yes, Issue Fines</button>
               <button class="action-btn secondary" onclick="hideCloseForFinesConfirm()">Cancel</button>
@@ -1472,6 +1510,9 @@
           <div class="btn-row" style="margin-bottom:10px">
             <button class="action-btn primary" onclick="reopenVoting()">▶️ Reopen Voting</button>
             <button class="action-btn danger"  onclick="showResetConfirm()">🏅 Reset & Archive</button>
+          </div>
+          <div class="btn-row" style="margin-bottom:10px" id="closed-fines-btn-row">
+            <button class="action-btn info" id="close-for-fines-btn-closed" onclick="showCloseForFinesConfirm()">💸 Issue Voting Fines (Optional)</button>
           </div>
           <div class="reset-confirm-box" id="reset-confirm-box">
             <p>This will archive the match results and award season points to the top 3 players. <strong>This cannot be undone.</strong></p>
@@ -1708,6 +1749,19 @@
       </div>
     </div><!-- /admin-sub-results -->
 
+    <!-- ---- SEASON VOTES ADMIN ---- -->
+    <div class="admin-subsection" id="admin-sub-seasonvotes">
+      <div class="admin-section">
+        <div class="admin-section-title">🗳️ Season Vote Leaderboard</div>
+        <div id="sv-leaderboard"></div>
+      </div>
+      <div class="admin-section">
+        <div class="admin-section-title">📋 Per-Match Breakdown</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Each match shows votes received per player. Press ✏️ Edit to adjust counts — points recalculate automatically.</p>
+        <div id="sv-match-list"></div>
+      </div>
+    </div><!-- /admin-sub-seasonvotes -->
+
   </div><!-- /admin-content -->
 </div><!-- /page-admin -->
 
@@ -1741,7 +1795,8 @@
     'editSeasonFine','saveSeasonFine','cancelSeasonFine','deleteSeasonFine',
     'openEditResult','cancelEditResult','onEditScoreChange','saveEditedResult','deleteArchivedResult',
     'openEditVotes','cancelEditVotes','saveEditedVotes','addVoteRow',
-    'checkPin'
+    'checkPin',
+    'openSVEditor','recalcSVRow','saveSVEdits'
   ];
   _delegated.forEach(function(fn) {
     window[fn] = function() {
@@ -1780,6 +1835,7 @@
     if (typeof renderFinesAdmin        === 'function' && sub === 'fines')        renderFinesAdmin();
     if (typeof renderAdminAvailability === 'function' && sub === 'availability') renderAdminAvailability();
     if (typeof renderAdminResults      === 'function' && sub === 'results')      renderAdminResults();
+    if (typeof renderSeasonVotesAdmin  === 'function' && sub === 'seasonvotes')  renderSeasonVotesAdmin();
   }
 
   function showResultsTab(sub) {
@@ -2442,13 +2498,15 @@
 
   function updateCloseVotingBtnState() {
     const match  = state.match;
-    const cvBtn  = document.getElementById('close-voting-btn');
-    const cffBtn = document.getElementById('close-for-fines-btn');
-    if (!cvBtn || !cffBtn) return;
+    const cffBtn       = document.getElementById('close-for-fines-btn');
+    const cffBtnClosed = document.getElementById('close-for-fines-btn-closed');
     const finesDone = match && state.finesClosedMatch === match.name;
-    cvBtn.disabled  = !finesDone;
-    cvBtn.title     = finesDone ? '' : 'You must press Close for Fines first';
-    cffBtn.disabled = !!finesDone;
+    if (cffBtn)       cffBtn.disabled       = !!finesDone;
+    if (cffBtnClosed) cffBtnClosed.disabled = !!finesDone;
+    // Update closed-state button label to confirm fines already issued
+    if (cffBtnClosed) {
+      cffBtnClosed.textContent = finesDone ? '✅ Voting Fines Already Issued' : '💸 Issue Voting Fines (Optional)';
+    }
   }
 
   // ── CLOSE VOTING PANEL (score + goals entry) ──
@@ -2694,6 +2752,12 @@
         goals:         result ? (result.goals || []) : []
       });
 
+      // Season votes — tally and write
+      const votesSnap = await db.ref('votes').once('value');
+      const votesTally = tallyVotesForMatch(votesSnap.val(), match.name);
+      const matchKey = sanitiseKey(match.name);
+      await writeSeasonVotesForMatch(matchKey, match.name, votesTally);
+
       // Clear match data
       await dbRemove('match');
       await dbRemove('votes');
@@ -2731,6 +2795,8 @@
       if (newSeasonPts[r.name] <= 0) delete newSeasonPts[r.name];
     });
     await dbSet('seasonPts', newSeasonPts);
+    // Reverse season votes
+    await removeSeasonVotesForMatch(sanitiseKey(entry.matchName));
 
     // Reverse player stats
     const newPS = JSON.parse(JSON.stringify(state.playerStats || {}));
@@ -4198,6 +4264,16 @@
     try {
       await dbUpdate('archive/' + editingVotesArchiveKey, { seasonAwarded: newAwarded });
       await dbSet('seasonPts', newSeasonPts);
+      // Sync season votes — rebuild tally from newAwarded and diff
+      const svOldSnap = await db.ref('seasonVotes/matches/' + sanitiseKey(oldEntry.matchName) + '/votes').once('value');
+      const svOldTally = svOldSnap.val() || {};
+      const svNewTally = {};
+      newAwarded.forEach(r => {
+        if (!r.name) return;
+        if (!svNewTally[r.name]) svNewTally[r.name] = { first: 0, second: 0, third: 0, pts: 0 };
+        svNewTally[r.name].pts += r.award;
+      });
+      await diffAndUpdateSeasonVotes(sanitiseKey(oldEntry.matchName), oldEntry.matchName, svOldTally, svNewTally);
 
       // Force local state immediately
       state.seasonPts = newSeasonPts;
@@ -4255,6 +4331,210 @@
   function escHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
+  // ============================================================
+  // SEASON VOTES ADMIN
+  // ============================================================
+
+  function sanitiseKey(s) {
+    return s.replace(/[^a-zA-Z0-9_\-]/g, '_');
+  }
+
+  // Tally raw votes node for a given matchName into { player: { first, second, third, pts } }
+  function tallyVotesForMatch(votesObj, matchName) {
+    const tally = {};
+    if (!votesObj) return tally;
+    Object.values(votesObj).forEach(v => {
+      if (v.matchName !== matchName) return;
+      ['1','2','3'].forEach((rank, i) => {
+        const player = v.picks && v.picks[rank];
+        if (!player) return;
+        if (!tally[player]) tally[player] = { first: 0, second: 0, third: 0, pts: 0 };
+        const pts = 3 - i;
+        if (rank === '1') tally[player].first++;
+        if (rank === '2') tally[player].second++;
+        if (rank === '3') tally[player].third++;
+        tally[player].pts += pts;
+      });
+    });
+    return tally;
+  }
+
+  // Write a match's vote tally to seasonVotes (called on archive)
+  async function writeSeasonVotesForMatch(matchKey, matchLabel, tally) {
+    const updates = {};
+    updates['seasonVotes/matches/' + matchKey + '/label'] = matchLabel;
+    updates['seasonVotes/matches/' + matchKey + '/votes'] = Object.keys(tally).length > 0 ? tally : null;
+    await db.ref('seasonVotes').update(updates);
+    for (const [player, data] of Object.entries(tally)) {
+      await db.ref('seasonVotes/totals/' + player).transaction(cur => (cur || 0) + data.pts);
+    }
+  }
+
+  // Diff old vs new tally and update seasonVotes totals
+  async function diffAndUpdateSeasonVotes(matchKey, matchLabel, oldTally, newTally) {
+    const updates = {};
+    updates['seasonVotes/matches/' + matchKey + '/label'] = matchLabel;
+    updates['seasonVotes/matches/' + matchKey + '/votes'] = Object.keys(newTally).length > 0 ? newTally : null;
+    await db.ref('seasonVotes').update(updates);
+    const allPlayers = new Set([...Object.keys(oldTally), ...Object.keys(newTally)]);
+    for (const player of allPlayers) {
+      const oldPts = (oldTally[player] && oldTally[player].pts) || 0;
+      const newPts = (newTally[player] && newTally[player].pts) || 0;
+      const diff = newPts - oldPts;
+      if (diff !== 0) {
+        await db.ref('seasonVotes/totals/' + player).transaction(cur => Math.max(0, (cur || 0) + diff));
+      }
+    }
+  }
+
+  // Remove a match's contribution from seasonVotes (called on archive delete)
+  async function removeSeasonVotesForMatch(matchKey) {
+    const snap = await db.ref('seasonVotes/matches/' + matchKey).once('value');
+    const data = snap.val();
+    if (!data || !data.votes) { await db.ref('seasonVotes/matches/' + matchKey).remove(); return; }
+    for (const [player, v] of Object.entries(data.votes)) {
+      await db.ref('seasonVotes/totals/' + player).transaction(cur => Math.max(0, (cur || 0) - (v.pts || 0)));
+    }
+    await db.ref('seasonVotes/matches/' + matchKey).remove();
+  }
+
+  // Render the full Season Votes admin section
+  function renderSeasonVotesAdmin() {
+    renderSVLeaderboard();
+    renderSVMatchList();
+  }
+
+  function renderSVLeaderboard() {
+    const el = document.getElementById('sv-leaderboard');
+    if (!el) return;
+    db.ref('seasonVotes/totals').once('value').then(snap => {
+      const totals = snap.val() || {};
+      const sorted = Object.entries(totals).filter(([,v]) => v > 0).sort(([,a],[,b]) => b - a);
+      if (!sorted.length) { el.innerHTML = '<div class="no-votes">No votes recorded yet.</div>'; return; }
+      const max = sorted[0][1] || 1;
+      el.innerHTML = '<div class="sv-board">' +
+        sorted.map(([name, pts], i) =>
+          '<div class="sv-row">' +
+          '<span class="sv-rank">' + (i + 1) + '</span>' +
+          '<span class="sv-name">' + escHtml(name) + '</span>' +
+          '<div class="sv-bar-wrap"><div class="sv-bar" style="width:' + Math.round(pts / max * 100) + '%"></div></div>' +
+          '<span class="sv-pts">' + pts + ' pts</span>' +
+          '</div>'
+        ).join('') +
+        '</div>';
+    });
+  }
+
+  function renderSVMatchList() {
+    const el = document.getElementById('sv-match-list');
+    if (!el) return;
+    db.ref('seasonVotes/matches').once('value').then(snap => {
+      const matches = snap.val() || {};
+      const entries = Object.entries(matches).sort(([,a],[,b]) => (b.label || '').localeCompare(a.label || ''));
+      if (!entries.length) { el.innerHTML = '<div class="no-votes">No archived matches yet.</div>'; return; }
+      el.innerHTML = entries.map(([key, match]) => {
+        const votes  = match.votes || {};
+        const total  = Object.values(votes).reduce((s, v) => s + (v.pts || 0), 0);
+        const sorted = Object.entries(votes).sort(([,a],[,b]) => b.pts - a.pts);
+        const voteRows = sorted.map(([name, v]) =>
+          '<div class="sv-vote-row">' +
+          '<span class="sv-vname">' + escHtml(name) + '</span>' +
+          '<span class="sv-chip sv-chip-1">🥇 ' + v.first + '</span>' +
+          '<span class="sv-chip sv-chip-2">🥈 ' + v.second + '</span>' +
+          '<span class="sv-chip sv-chip-3">🥉 ' + v.third + '</span>' +
+          '<span class="sv-chip sv-chip-p">' + v.pts + ' pts</span>' +
+          '</div>'
+        ).join('');
+        return '<div class="sv-match-card" id="svm-' + key + '">' +
+          '<div class="sv-match-header">' +
+          '<div><div class="sv-match-name">' + escHtml(match.label || key) + '</div>' +
+          '<div class="sv-match-sub">' + sorted.length + ' players · ' + total + ' pts total</div></div>' +
+          '<button class="sv-edit-btn" onclick="openSVEditor(\'' + key + '\')">✏️ Edit</button>' +
+          '</div>' +
+          '<div class="sv-votes-list" id="svvotes-' + key + '">' + voteRows + '</div>' +
+          '<div class="sv-editor" id="svEdit-' + key + '"></div>' +
+          '</div>';
+      }).join('');
+    });
+  }
+
+  window._impl_openSVEditor = async function(matchKey) {
+    const editorEl = document.getElementById('svEdit-' + matchKey);
+    const btn = document.querySelector('#svm-' + matchKey + ' .sv-edit-btn');
+    if (!editorEl) return;
+    if (editorEl.style.display === 'block') {
+      editorEl.style.display = 'none';
+      if (btn) btn.textContent = '✏️ Edit';
+      return;
+    }
+    if (btn) btn.textContent = '✖ Close';
+    editorEl.innerHTML = '<p style="color:var(--muted);font-size:12px">Loading...</p>';
+    editorEl.style.display = 'block';
+    const snap = await db.ref('seasonVotes/matches/' + matchKey).once('value');
+    const matchData = snap.val() || {};
+    const votes = matchData.votes || {};
+    const rows  = Object.entries(votes).sort(([,a],[,b]) => b.pts - a.pts);
+    if (!rows.length) { editorEl.innerHTML = '<p style="color:var(--muted);font-size:12px">No vote data for this match.</p>'; return; }
+    editorEl.innerHTML =
+      '<p class="sv-editor-hint">Edit 1st, 2nd, and 3rd place vote counts. Points update live (1st=3pts · 2nd=2pts · 3rd=1pt).</p>' +
+      '<table class="sv-edit-table">' +
+      '<thead><tr><th>Player</th><th>🥇 1st</th><th>🥈 2nd</th><th>🥉 3rd</th><th>Total</th></tr></thead>' +
+      '<tbody>' +
+      rows.map(([name, v]) =>
+        '<tr data-player="' + escHtml(name) + '">' +
+        '<td class="sv-player-cell">' + escHtml(name) + '</td>' +
+        '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="' + v.first + '" oninput="recalcSVRow(this)"></td>' +
+        '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="' + v.second + '" oninput="recalcSVRow(this)"></td>' +
+        '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="' + v.third + '" oninput="recalcSVRow(this)"></td>' +
+        '<td class="sv-row-pts-cell">' + v.pts + ' pts</td>' +
+        '</tr>'
+      ).join('') +
+      '</tbody></table>' +
+      '<div class="sv-editor-actions">' +
+      '<button class="action-btn primary" style="font-size:13px;padding:9px 18px" onclick="saveSVEdits(\'' + matchKey + '\',\'' + escHtml(matchData.label || matchKey) + '\')">💾 Save Changes</button>' +
+      '<span class="sv-save-status" id="svSaveStatus-' + matchKey + '"></span>' +
+      '</div>';
+  };
+
+  window._impl_recalcSVRow = function(input) {
+    const row = input.closest('tr');
+    if (!row) return;
+    const f = parseInt(row.querySelector('.sv-in-first').value)  || 0;
+    const s = parseInt(row.querySelector('.sv-in-second').value) || 0;
+    const t = parseInt(row.querySelector('.sv-in-third').value)  || 0;
+    row.querySelector('.sv-row-pts-cell').textContent = (f * 3 + s * 2 + t) + ' pts';
+  };
+
+  window._impl_saveSVEdits = async function(matchKey, matchLabel) {
+    const editorEl  = document.getElementById('svEdit-' + matchKey);
+    const statusEl  = document.getElementById('svSaveStatus-' + matchKey);
+    if (!editorEl || !statusEl) return;
+    const rows = editorEl.querySelectorAll('tbody tr[data-player]');
+    const newTally = {};
+    rows.forEach(row => {
+      const name = row.dataset.player;
+      const f    = parseInt(row.querySelector('.sv-in-first').value)  || 0;
+      const s    = parseInt(row.querySelector('.sv-in-second').value) || 0;
+      const t    = parseInt(row.querySelector('.sv-in-third').value)  || 0;
+      newTally[name] = { first: f, second: s, third: t, pts: f * 3 + s * 2 + t };
+    });
+    statusEl.textContent = 'Saving...';
+    statusEl.style.color = 'var(--muted)';
+    try {
+      const oldSnap  = await db.ref('seasonVotes/matches/' + matchKey + '/votes').once('value');
+      const oldTally = oldSnap.val() || {};
+      await diffAndUpdateSeasonVotes(matchKey, matchLabel, oldTally, newTally);
+      statusEl.textContent = '✅ Saved!';
+      statusEl.style.color = 'var(--green)';
+      renderSVLeaderboard();
+      renderSVMatchList();
+    } catch(e) {
+      statusEl.textContent = '❌ Error — check console';
+      statusEl.style.color = 'var(--red)';
+      console.error('saveSVEdits error:', e);
+    }
+  };
 
 </script>
 </body>
