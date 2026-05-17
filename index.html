@@ -4553,13 +4553,13 @@
           .sort((a, b) => b.pts - a.pts);
         const total     = rows.reduce((s, r) => s + r.pts, 0);
         const withVotes = rows.filter(r => r.pts > 0).length;
-        const voteRows  = rows.map(r =>
-          '<div class="sv-vote-row' + (r.pts === 0 ? ' sv-vote-zero' : '') + '">' +
+        const voteRows  = rows.filter(r => r.pts > 0).map(r =>
+          '<div class="sv-vote-row">' +
           '<span class="sv-vname">' + escHtml(r.name) + '</span>' +
           '<span class="sv-chip sv-chip-1">🥇 ' + r.first + '</span>' +
           '<span class="sv-chip sv-chip-2">🥈 ' + r.second + '</span>' +
           '<span class="sv-chip sv-chip-3">🥉 ' + r.third + '</span>' +
-          '<span class="sv-chip sv-chip-p' + (r.pts === 0 ? ' sv-chip-zero' : '') + '">' + r.pts + ' pts</span>' +
+          '<span class="sv-chip sv-chip-p">' + r.pts + ' pts</span>' +
           '</div>'
         ).join('');
         return '<div class="sv-match-card" id="svm-' + key + '">' +
