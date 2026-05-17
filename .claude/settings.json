@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Read(**)",
-      "Edit(index_42.html)"
+      "Edit(**)",
+      "Bash(git *)",
+      "Bash(python3 *)"
     ],
     "deny": []
   }
