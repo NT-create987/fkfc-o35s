@@ -4363,8 +4363,8 @@
   // Write a match's vote tally to seasonVotes (called on archive)
   async function writeSeasonVotesForMatch(matchKey, matchLabel, tally) {
     const updates = {};
-    updates['seasonVotes/matches/' + matchKey + '/label'] = matchLabel;
-    updates['seasonVotes/matches/' + matchKey + '/votes'] = Object.keys(tally).length > 0 ? tally : null;
+    updates['matches/' + matchKey + '/label'] = matchLabel;
+    updates['matches/' + matchKey + '/votes'] = Object.keys(tally).length > 0 ? tally : null;
     await db.ref('seasonVotes').update(updates);
     for (const [player, data] of Object.entries(tally)) {
       await db.ref('seasonVotes/totals/' + player).transaction(cur => (cur || 0) + data.pts);
@@ -4374,8 +4374,8 @@
   // Diff old vs new tally and update seasonVotes totals
   async function diffAndUpdateSeasonVotes(matchKey, matchLabel, oldTally, newTally) {
     const updates = {};
-    updates['seasonVotes/matches/' + matchKey + '/label'] = matchLabel;
-    updates['seasonVotes/matches/' + matchKey + '/votes'] = Object.keys(newTally).length > 0 ? newTally : null;
+    updates['matches/' + matchKey + '/label'] = matchLabel;
+    updates['matches/' + matchKey + '/votes'] = Object.keys(newTally).length > 0 ? newTally : null;
     await db.ref('seasonVotes').update(updates);
     const allPlayers = new Set([...Object.keys(oldTally), ...Object.keys(newTally)]);
     for (const player of allPlayers) {
