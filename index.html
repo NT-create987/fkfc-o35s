@@ -4605,9 +4605,9 @@
     const makeRow = (name, v, isZero) =>
       '<tr data-player="' + escHtml(name) + '"' + (isZero ? ' class="sv-edit-zero"' : '') + '>' +
       '<td class="sv-player-cell">' + escHtml(name) + '</td>' +
-      '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="' + (v.first||0) + '" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value='0'" oninput="recalcSVRow(this)"></td>' +
-      '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="' + (v.second||0) + '" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value='0'" oninput="recalcSVRow(this)"></td>' +
-      '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="' + (v.third||0) + '" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value='0'" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="' + (v.first||0) + '" onfocus="this.select()" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="' + (v.second||0) + '" onfocus="this.select()" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="' + (v.third||0) + '" onfocus="this.select()" oninput="recalcSVRow(this)"></td>' +
       '<td class="sv-row-pts-cell">' + (v.pts||0) + ' pts</td>' +
       '</tr>';
     const zeroSep = zeroNames.length
@@ -4655,9 +4655,9 @@
     newRow.className = 'sv-edit-zero';
     newRow.innerHTML =
       '<td class="sv-player-cell">' + escHtml(name) + '</td>' +
-      '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="0" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value='0'" oninput="recalcSVRow(this)"></td>' +
-      '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="0" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value='0'" oninput="recalcSVRow(this)"></td>' +
-      '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="0" onfocus="if(this.value==='0')this.value=''" onblur="if(this.value==='')this.value='0'" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="0" onfocus="this.select()" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="0" onfocus="this.select()" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="0" onfocus="this.select()" oninput="recalcSVRow(this)"></td>' +
       '<td class="sv-row-pts-cell">0 pts</td>';
     if (sep) tbody.insertBefore(newRow, sep);
     else tbody.appendChild(newRow);
