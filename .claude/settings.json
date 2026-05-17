@@ -4,7 +4,8 @@
       "Read(**)",
       "Edit(**)",
       "Bash(git *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "PowerShell(git *)"
     ],
     "deny": []
   }
