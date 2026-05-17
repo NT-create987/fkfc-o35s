@@ -1246,6 +1246,10 @@
   .sv-top3-name { flex: 1; font-size: 16px; font-weight: 600; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px; color: var(--text); }
   .sv-top3-pts { font-size: 13px; font-weight: 600; color: var(--green); }
   .sv-vote-zero .sv-vname { color: var(--muted); }
+  .sv-votes-header { display: flex; align-items: center; gap: 6px; padding: 3px 0 6px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+  .sv-col-hdr { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-family: 'Bebas Neue', sans-serif; min-width: 46px; text-align: center; }
+  .sv-edit-zero td { opacity: 0.5; }
+  .sv-edit-zero td.sv-player-cell { opacity: 0.7; }
   /* Counts leaderboard + closed vote table */
   .sv-counts-table, .sv-closed-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
   .sv-counts-table th, .sv-closed-table th { background: var(--card); color: var(--muted); padding: 6px 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
@@ -1774,13 +1778,13 @@
     <!-- ---- SEASON VOTES ADMIN ---- -->
     <div class="admin-subsection" id="admin-sub-seasonvotes">
       <div class="admin-section">
-        <div class="admin-section-title">🏆 Season Points</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">Cumulative weighted points (1st vote = 3pts · 2nd = 2pts · 3rd = 1pt) across all matches.</p>
+        <div class="admin-section-title">🏆 Season Votes</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">Cumulative vote score across all matches (1st = 3 · 2nd = 2 · 3rd = 1).</p>
         <div id="sv-leaderboard"></div>
       </div>
       <div class="admin-section">
-        <div class="admin-section-title">📊 Total Vote Counts</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">How many times each player has been voted 1st, 2nd, or 3rd across the season.</p>
+        <div class="admin-section-title">📊 3, 2, 1 Match Votes</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6">How many times each player has finished 1st, 2nd, or 3rd across the season.</p>
         <div id="sv-leaderboard-counts"></div>
       </div>
       <div class="admin-section">
@@ -2108,7 +2112,7 @@
           '<div class="sv-top3-row">' +
           '<span class="sv-top3-icon">' + r.icon + '</span>' +
           '<span class="sv-top3-name">' + escHtml(r.name) + '</span>' +
-          '<span class="sv-top3-pts">+' + r.award + ' season pts</span>' +
+          '<span class="sv-top3-pts">' + r.award + '</span>' +
           '</div>'
         ).join('') +
         '</div>';
@@ -4487,7 +4491,7 @@
               '<span class="sv-rank">' + (i+1) + '</span>' +
               '<span class="sv-name">' + escHtml(name) + '</span>' +
               '<div class="sv-bar-wrap"><div class="sv-bar" style="width:' + Math.round(p/max*100) + '%"></div></div>' +
-              '<span class="sv-pts">' + p + ' pts</span>' +
+              '<span class="sv-pts">' + p + ' VOTES</span>' +
               '</div>'
             ).join('') + '</div>';
         }
@@ -4566,7 +4570,15 @@
           '<div class="sv-match-sub">' + withVotes + ' voted · ' + rows.length + ' in squad · ' + total + ' pts total</div></div>' +
           '<button class="sv-edit-btn" onclick="openSVEditor(\'' + key + '\')">✏️ Edit</button>' +
           '</div>' +
-          '<div class="sv-votes-list" id="svvotes-' + key + '">' + voteRows + '</div>' +
+          '<div class="sv-votes-list" id="svvotes-' + key + '">' +
+          '<div class="sv-votes-header">' +
+          '<span class="sv-vname"></span>' +
+          '<span class="sv-col-hdr">🥇 1ST</span>' +
+          '<span class="sv-col-hdr">🥈 2ND</span>' +
+          '<span class="sv-col-hdr">🥉 3RD</span>' +
+          '<span class="sv-col-hdr">PTS</span>' +
+          '</div>' +
+          voteRows + '</div>' +
           '<div class="sv-editor" id="svEdit-' + key + '"></div>' +
           '</div>';
       }).join('');
@@ -4588,22 +4600,29 @@
     const snap = await db.ref('seasonVotes/matches/' + matchKey).once('value');
     const matchData = snap.val() || {};
     const votes = matchData.votes || {};
-    const rows  = Object.entries(votes).sort(([,a],[,b]) => b.pts - a.pts);
-    if (!rows.length) { editorEl.innerHTML = '<p style="color:var(--muted);font-size:12px">No vote data for this match.</p>'; return; }
+    const squad = matchData.squad || [];
+    // Players with votes (sorted by pts desc), then squad members with 0 votes
+    const votedRows  = Object.entries(votes).sort(([,a],[,b]) => b.pts - a.pts);
+    const zeroNames  = squad.filter(n => !votes[n]);
+    const makeRow = (name, v, isZero) =>
+      '<tr data-player="' + escHtml(name) + '"' + (isZero ? ' class="sv-edit-zero"' : '') + '>' +
+      '<td class="sv-player-cell">' + escHtml(name) + '</td>' +
+      '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="' + (v.first||0) + '" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="' + (v.second||0) + '" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="' + (v.third||0) + '" oninput="recalcSVRow(this)"></td>' +
+      '<td class="sv-row-pts-cell">' + (v.pts||0) + ' pts</td>' +
+      '</tr>';
+    const zeroSep = zeroNames.length
+      ? '<tr class="sv-edit-sep"><td colspan="5" style="padding:6px 8px;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;border-top:1px dashed var(--border)">Late / no votes</td></tr>'
+      : '';
     editorEl.innerHTML =
-      '<p class="sv-editor-hint">Edit 1st, 2nd, and 3rd place vote counts. Points update live (1st=3pts · 2nd=2pts · 3rd=1pt).</p>' +
+      '<p class="sv-editor-hint">Edit vote counts. Players with no votes are shown below the divider.</p>' +
       '<table class="sv-edit-table">' +
       '<thead><tr><th>Player</th><th>🥇 1st</th><th>🥈 2nd</th><th>🥉 3rd</th><th>Total</th></tr></thead>' +
       '<tbody>' +
-      rows.map(([name, v]) =>
-        '<tr data-player="' + escHtml(name) + '">' +
-        '<td class="sv-player-cell">' + escHtml(name) + '</td>' +
-        '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="' + v.first + '" oninput="recalcSVRow(this)"></td>' +
-        '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="' + v.second + '" oninput="recalcSVRow(this)"></td>' +
-        '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="' + v.third + '" oninput="recalcSVRow(this)"></td>' +
-        '<td class="sv-row-pts-cell">' + v.pts + ' pts</td>' +
-        '</tr>'
-      ).join('') +
+      votedRows.map(([name, v]) => makeRow(name, v, false)).join('') +
+      zeroSep +
+      zeroNames.map(name => makeRow(name, {}, true)).join('') +
       '</tbody></table>' +
       '<div class="sv-editor-actions">' +
       '<button class="action-btn primary" style="font-size:13px;padding:9px 18px" onclick="saveSVEdits(\'' + matchKey + '\',\'' + escHtml(matchData.label || matchKey) + '\')">💾 Save Changes</button>' +
@@ -4631,7 +4650,10 @@
       const f    = parseInt(row.querySelector('.sv-in-first').value)  || 0;
       const s    = parseInt(row.querySelector('.sv-in-second').value) || 0;
       const t    = parseInt(row.querySelector('.sv-in-third').value)  || 0;
-      newTally[name] = { first: f, second: s, third: t, pts: f * 3 + s * 2 + t };
+      const pts  = f * 3 + s * 2 + t;
+      if (pts > 0 || f > 0 || s > 0 || t > 0) {
+        newTally[name] = { first: f, second: s, third: t, pts };
+      }
     });
     statusEl.textContent = 'Saving...';
     statusEl.style.color = 'var(--muted)';
