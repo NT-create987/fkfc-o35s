@@ -1250,6 +1250,8 @@
   .sv-col-hdr { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-family: 'Bebas Neue', sans-serif; min-width: 46px; text-align: center; }
   .sv-edit-zero td { opacity: 0.5; }
   .sv-edit-zero td.sv-player-cell { opacity: 0.7; }
+  .sv-add-player-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .sv-add-select { flex: 1; background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 6px 8px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; outline: none; }
   /* Counts leaderboard + closed vote table */
   .sv-counts-table, .sv-closed-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
   .sv-counts-table th, .sv-closed-table th { background: var(--card); color: var(--muted); padding: 6px 8px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; text-align: center; border-bottom: 1px solid var(--border); }
@@ -1828,7 +1830,7 @@
     'openEditResult','cancelEditResult','onEditScoreChange','saveEditedResult','deleteArchivedResult',
     'openEditVotes','cancelEditVotes','saveEditedVotes','addVoteRow',
     'checkPin',
-    'openSVEditor','recalcSVRow','saveSVEdits'
+    'openSVEditor','recalcSVRow','saveSVEdits','addSVPlayer'
   ];
   _delegated.forEach(function(fn) {
     window[fn] = function() {
@@ -4627,7 +4629,42 @@
       '<div class="sv-editor-actions">' +
       '<button class="action-btn primary" style="font-size:13px;padding:9px 18px" onclick="saveSVEdits(\'' + matchKey + '\',\'' + escHtml(matchData.label || matchKey) + '\')">💾 Save Changes</button>' +
       '<span class="sv-save-status" id="svSaveStatus-' + matchKey + '"></span>' +
+      '</div>' +
+      '<div class="sv-add-player-row" id="svAddRow-' + matchKey + '">' +
+      '<select class="sv-add-select" id="svAddSel-' + matchKey + '">' +
+      '<option value="">— Add a player —</option>' +
+      getAllPlayers()
+        .filter(p => !votes[p] && !squad.includes(p))
+        .sort()
+        .map(p => '<option value="' + escHtml(p) + '">' + escHtml(p) + '</option>').join('') +
+      '</select>' +
+      '<button class="action-btn secondary" style="font-size:12px;padding:7px 12px;flex:none;min-width:auto" onclick="addSVPlayer(\'' + matchKey + '\')">+ Add</button>' +
       '</div>';
+  };
+
+  window._impl_addSVPlayer = function(matchKey) {
+    const sel = document.getElementById('svAddSel-' + matchKey);
+    const name = sel ? sel.value : '';
+    if (!name) return;
+    const tbody = document.querySelector('#svEdit-' + matchKey + ' tbody');
+    if (!tbody) return;
+    // Remove from dropdown
+    const opt = sel.querySelector('option[value="' + name + '"]');
+    if (opt) opt.remove();
+    sel.value = '';
+    // Append new row
+    const sep = tbody.querySelector('.sv-edit-sep');
+    const newRow = document.createElement('tr');
+    newRow.dataset.player = name;
+    newRow.className = 'sv-edit-zero';
+    newRow.innerHTML =
+      '<td class="sv-player-cell">' + escHtml(name) + '</td>' +
+      '<td><input type="number" class="sv-num-input sv-in-first" min="0" value="0" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-second" min="0" value="0" oninput="recalcSVRow(this)"></td>' +
+      '<td><input type="number" class="sv-num-input sv-in-third" min="0" value="0" oninput="recalcSVRow(this)"></td>' +
+      '<td class="sv-row-pts-cell">0 pts</td>';
+    if (sep) tbody.insertBefore(newRow, sep);
+    else tbody.appendChild(newRow);
   };
 
   window._impl_recalcSVRow = function(input) {
