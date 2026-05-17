@@ -1445,10 +1445,10 @@
   <div class="admin-content" id="admin-content">
     <div class="admin-tabs">
       <button class="admin-tab active" data-sub="voting"><span class="tab-icon">⚽</span><span class="tab-label">Voting</span></button>
+      <button class="admin-tab" data-sub="seasonvotes"><span class="tab-icon">🗳️</span><span class="tab-label">Votes</span></button>
       <button class="admin-tab" data-sub="availability"><span class="tab-icon">📋</span><span class="tab-label">Avail.</span></button>
       <button class="admin-tab" data-sub="fines"><span class="tab-icon">💸</span><span class="tab-label">Fines</span></button>
       <button class="admin-tab" data-sub="results"><span class="tab-icon">✏️</span><span class="tab-label">Results</span></button>
-      <button class="admin-tab" data-sub="seasonvotes"><span class="tab-icon">🗳️</span><span class="tab-label">Votes</span></button>
     </div>
 
     <!-- ---- VOTING ADMIN ---- -->
@@ -1567,14 +1567,6 @@
         <div id="full-standings"></div>
       </div>
 
-      <div class="admin-section">
-        <div class="admin-section-title">🏅 Season Leaderboard</div>
-        <div class="section-title">Cumulative season points</div>
-        <div id="season-standings-admin"></div>
-        <div style="margin-top:16px">
-          <button class="action-btn danger" style="font-size:13px;padding:8px 14px;letter-spacing:1px;flex:none;" onclick="clearSeasonData()">🗑 Clear Season Data</button>
-        </div>
-      </div>
 
       <div class="admin-section">
         <div class="admin-section-title">📝 Vote Log</div>
@@ -1793,6 +1785,9 @@
         <div class="admin-section-title">📋 Per-Match Breakdown</div>
         <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Each match shows votes received per player. Press ✏️ Edit to adjust counts — points recalculate automatically.</p>
         <div id="sv-match-list"></div>
+      </div>
+      <div class="admin-section" style="margin-top:8px">
+        <button class="action-btn danger" style="font-size:13px;padding:8px 14px;letter-spacing:1px;flex:none;" onclick="clearSeasonData()">🗑 Clear Season Data</button>
       </div>
     </div><!-- /admin-sub-seasonvotes -->
 
@@ -3006,6 +3001,7 @@
 
   function renderSeasonStandings(elId) {
     const el     = document.getElementById(elId);
+    if (!el) return;
     const sorted = Object.entries(state.seasonPts).filter(([,p]) => p > 0).sort((a,b) => b[1]-a[1]);
     if (sorted.length === 0) { el.innerHTML = '<div class="no-votes">No season points yet!</div>'; return; }
     let rows = '', displayRank = 1;
